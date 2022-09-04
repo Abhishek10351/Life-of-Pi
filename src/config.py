@@ -1,3 +1,4 @@
+import math
 import pathlib
 
 # Dimensions and title
@@ -16,6 +17,10 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
+VIEWPORT_ANGLE = 0
+
+INVERT_MOUSE = True
+
 
 # Initial ressource
 INITIAL_RESSOURCES_LEVEL_0 = {'H2O' : 100,
@@ -58,3 +63,6 @@ TANK_STORAGE = {'h2o_tank' : 0,
                 'fe_tank' : 0,
                 'poly_tank' : 0,
                 'ener_tank' : 0}
+
+
+
