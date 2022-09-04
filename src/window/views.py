@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, STYLE_GOLDEN_TANOI
+from config import ASSET_PATH, STYLE_GOLDEN_TANOI, CAMERA_MOVEMENT_SPEED
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "DiloWorld-mLJLv.ttf"))
 
@@ -72,5 +72,79 @@ class Game(arcade.View):
         super().__init__(main_window)
         self.main_window = main_window
 
+        self.game_scene: arcade.Scene = None
+        self.tile_sprite_list: arcade.SpriteList = None
+
+        self.camera_sprite = None
+        self.physics_engine = None
+        self.camera: arcade.Camera = None
+
+    def on_show_view(self):
+        """Called when the current is switched to this view."""
+        self.setup()
+
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        self.game_scene = arcade.Scene()
+        self.game_scene.add_sprite_list("Tiles")
+
+        self.camera = arcade.Camera(self.main_window.width, self.main_window.height)
+
+        for i in range(25, 800, 50):
+            for j in range(25, 600, 50):
+                tile = arcade.Sprite(str(ASSET_PATH / "tiles" / "land.png"))
+                tile.center_x = i
+                tile.center_y = j
+                self.game_scene.add_sprite("Tiles", tile)
+
+        self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
+        self.camera_sprite.center_x = 400
+        self.camera_sprite.center_y = 300
+        self.game_scene.add_sprite("Camera", self.camera_sprite)
+
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
+
     def on_draw(self):
+        """Render the screen."""
         self.clear()
+
+        self.camera.use()
+
+        self.game_scene.draw()
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.camera_sprite.change_y = CAMERA_MOVEMENT_SPEED
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.camera_sprite.change_y = -CAMERA_MOVEMENT_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        """Called when the user releases a key."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.camera_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.camera_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.camera_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.camera_sprite.change_x = 0
+
+    def center_camera_to_camera(self):
+        screen_center_x = self.camera_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.camera_sprite.center_y - (self.camera.viewport_height / 2)
+
+        camera_centered = screen_center_x, screen_center_y
+        self.camera.move_to(camera_centered)
+
+    def on_update(self, delta_time):
+        """Movement and game logic"""
+        self.physics_engine.update()
+        # Position the camera
+        self.center_camera_to_camera()

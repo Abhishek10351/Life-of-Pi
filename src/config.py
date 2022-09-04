@@ -13,3 +13,6 @@ STYLE_GOLDEN_TANOI = {"font_name": "Dilo World", "font_color": (255, 207, 112), 
 PATH = pathlib.Path(__file__).resolve().parent.parent
 ASSET_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
 SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
+
+# Camera
+CAMERA_MOVEMENT_SPEED = 5
