@@ -120,9 +120,9 @@ class Game(arcade.View):
         """Called whenever a key is pressed."""
         # using change because if it is changed to player physics engine is required.
         if key == arcade.key.UP or key == arcade.key.W:
-            self.camera_sprite.center_y = CAMERA_MOVEMENT_SPEED
+            self.camera_sprite.change_y = CAMERA_MOVEMENT_SPEED
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.camera_sprite.center_y = -CAMERA_MOVEMENT_SPEED
+            self.camera_sprite.change_y = -CAMERA_MOVEMENT_SPEED
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
