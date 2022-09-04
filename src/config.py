@@ -1,3 +1,4 @@
+import math
 import pathlib
 
 # Dimensions and title
@@ -16,3 +17,5 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
+VIEWPORT_ANGLE = 0
+INVERT_MOUSE = True
