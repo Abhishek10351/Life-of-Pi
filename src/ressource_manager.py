@@ -56,7 +56,7 @@ class RessourceManager():
         self.h2o_vapor_generator = 0
         self.co2_generator = 0
         self.fe_generator = 0
-        self.co2_breaker_factory = 500
+        self.co2_breaker_factory = 0
         self.h2o_breaker_factory = 0
         self.poly_factory = 0
         self.solar_pannel = 0
