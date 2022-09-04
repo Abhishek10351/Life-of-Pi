@@ -12,7 +12,7 @@ class RessourceManager():
         INITIAL_MAXIMUM_RESSOURCES = INITIAL_MAXIMAL_RESSOURCES_LEVEL_0
         
         self.initial_h2o = INITIAL_RESSOURCES['H2O']
-        self.initial_co2 = INITIAL_RESSOURCES['C2O']
+        self.initial_co2 = INITIAL_RESSOURCES['CO2']
         self.initial_c = INITIAL_RESSOURCES['C']
         self.initial_h = INITIAL_RESSOURCES['H']
         self.initial_o2 = INITIAL_RESSOURCES['O2']
@@ -22,7 +22,7 @@ class RessourceManager():
         self.initial_money = INITIAL_RESSOURCES['Money']
         
         self.initial_maximum_h2o = INITIAL_MAXIMUM_RESSOURCES['H2O']
-        self.initial_maximum_co2 = INITIAL_MAXIMUM_RESSOURCES['C2O']
+        self.initial_maximum_co2 = INITIAL_MAXIMUM_RESSOURCES['CO2']
         self.initial_maximum_c = INITIAL_MAXIMUM_RESSOURCES['C']
         self.initial_maximum_h = INITIAL_MAXIMUM_RESSOURCES['H']
         self.initial_maximum_o2 = INITIAL_MAXIMUM_RESSOURCES['O2']
@@ -56,7 +56,7 @@ class RessourceManager():
         self.h2o_vapor_generator = 0
         self.co2_generator = 0
         self.fe_generator = 0
-        self.co2_breaker_factory = 0
+        self.co2_breaker_factory = 500
         self.h2o_breaker_factory = 0
         self.poly_factory = 0
         self.solar_pannel = 0
@@ -70,7 +70,7 @@ class RessourceManager():
         self.fe_tank = 0
         self.poly_tank = 0
         self.ener_tank = 0
-        
+
         
     def update(self) -> None:
         """
@@ -78,9 +78,6 @@ class RessourceManager():
         """
         self.update_h2o()
         self.update_co2()
-        self.update_c()
-        self.update_h()
-        self.update_o2()
         self.update_fe()
         self.update_polymer()
         self.update_energy()
@@ -112,52 +109,70 @@ class RessourceManager():
                 + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator']\
                 + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
         self.current_ressource['H2O'] += add_h2o
-        self.current_ressource['H2O'] -= RESSOURCE_GENERATION['h2o_breaker_factory']
-        
+        if self.current_ressource['H2O'] - RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory >= 0:
+            self.current_ressource['H2O'] -= RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory
+            self.current_ressource['O2'] += RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory / 2
+            self.current_ressource['H'] += RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory * 2
+        else:
+            self.current_ressource['O2'] += self.current_ressource['H2O'] / 2
+            self.current_ressource['H'] += self.current_ressource['H2O'] * 2
+            self.current_ressource['H2O'] = 0
+            
     def update_co2(self) -> None:
         """
         Update CO2 ressource
         """
-        self.current_ressource['CO2'] += RESSOURCE_GENERATION['co2_generator']
-        self.current_ressource['CO2'] -= RESSOURCE_GENERATION['co2_breaker_factory']
-        
-    def update_c(self) -> None:
-        """
-        Update C ressource
-        """
-        self.current_ressource['C'] += RESSOURCE_GENERATION['co2_breaker_factory']
-        
-    def update_h(self) -> None:
-        """
-        Update H ressource
-        """
-        self.current_ressource['H'] += RESSOURCE_GENERATION['h2o_breaker_factory'] *2
-        
-    def update_o2(self) -> None:
-        """
-        Update O2 ressource
-        """
-        self.current_ressource['O2'] += RESSOURCE_GENERATION['co2_breaker_factory'] + RESSOURCE_GENERATION['h2o_breaker_factory'] / 2
+        self.current_ressource['CO2'] += RESSOURCE_GENERATION['co2_generator'] * self.co2_generator
+        if self.current_ressource['CO2'] - RESSOURCE_GENERATION['co2_breaker_factory'] * self.co2_breaker_factory >= 0:
+            self.current_ressource['CO2'] -= RESSOURCE_GENERATION['co2_breaker_factory'] * self.co2_breaker_factory
+            self.current_ressource['O2'] += RESSOURCE_GENERATION['co2_breaker_factory'] * self.co2_breaker_factory
+            self.current_ressource['C'] += RESSOURCE_GENERATION['co2_breaker_factory'] * self.co2_breaker_factory
+        else:
+            self.current_ressource['O2'] += self.current_ressource['CO2']
+            self.current_ressource['C'] += self.current_ressource['CO2']
+            self.current_ressource['CO2'] = 0
         
     def update_fe(self) -> None:
         """
         Update Fe ressource
         """
-        self.current_ressource['Fe'] += RESSOURCE_GENERATION['fe_generator']
+        self.current_ressource['Fe'] += RESSOURCE_GENERATION['fe_generator'] * self.fe_generator
         
     def update_polymer(self) -> None:
         """
         Update Poly ressource
         """
-        self.current_ressource['Poly'] += RESSOURCE_GENERATION['poly_factory']
+        if self.current_ressource['C'] - RESSOURCE_GENERATION['poly_factory'] * self.poly_factory >=0 and\
+        self.current_ressource['H'] - RESSOURCE_GENERATION['poly_factory'] * self.poly_factory >= 0:
+            self.current_ressource['Poly'] += RESSOURCE_GENERATION['poly_factory'] * self.poly_factory
+            self.current_ressource['C'] -= RESSOURCE_GENERATION['poly_factory'] * self.poly_factory
+            self.current_ressource['H'] -= RESSOURCE_GENERATION['poly_factory'] * self.poly_factory
+        elif self.current_ressource['C'] - RESSOURCE_GENERATION['poly_factory'] * self.poly_factory >=0:
+            self.current_ressource['Poly'] += self.current_ressource['H']
+            self.current_ressource['C'] -= self.current_ressource['H']
+            self.current_ressource['H'] -= 0
+        elif self.current_ressource['H'] - RESSOURCE_GENERATION['poly_factory'] * self.poly_factory >=0:
+            self.current_ressource['Poly'] += self.current_ressource['C']
+            self.current_ressource['H'] -= self.current_ressource['C']
+            self.current_ressource['C'] -= 0
+            
         
     def update_energy(self) -> None:
         """
         Update Energy ressource
         """
-        self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] + RESSOURCE_GENERATION['geothermal_generator']
+        self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel\
+                                        + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
         
     def update_money(self) -> None:
         """
         Update money ressource
         """
+        
+if __name__ == '__main__':
+    rm = RessourceManager()
+    print(rm.current_ressource)
+    for i in range(15):
+        rm.update()
+        print(rm.current_ressource)
+        print('\n')
