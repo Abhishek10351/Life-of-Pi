@@ -2,6 +2,7 @@ import arcade
 import arcade.gui
 
 from config import ASSET_PATH, STYLE_GOLDEN_TANOI, CAMERA_MOVEMENT_SPEED
+from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "DiloWorld-mLJLv.ttf"))
 
@@ -78,6 +79,9 @@ class Game(arcade.View):
         self.camera_sprite = None
         self.physics_engine = None
         self.camera: arcade.Camera = None
+        
+        self.ressource_manager = RessourceManager()
+                                  
 
     def on_show_view(self):
         """Called when the current is switched to this view."""
