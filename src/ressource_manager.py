@@ -4,6 +4,8 @@ from config import TANK_STORAGE, RESSOURCE_GENERATION
 class RessourceManager():
     """Manage the ressources owned by the player and the maximum
     amount of ressources that can be stored
+    
+    Number of tanks, factories etc needs to be update by the Game class at each refresh
     """
 
     def __init__(self):
