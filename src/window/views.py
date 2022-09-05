@@ -1,9 +1,14 @@
+import datetime
 import math
+import time
 
 import arcade
 import arcade.gui
+from arcade.experimental.lights import LightLayer
+from scipy import interpolate
 
-from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE,
+from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
+                    CAMERA_MOVEMENT_SPEED, DAY_TOTAL_TIME, INVERT_MOUSE,
                     STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE)
 from ressource_manager import RessourceManager
 
@@ -114,6 +119,9 @@ class Game(arcade.View):
         self.physics_engine = None
         self.camera: arcade.Camera = None
 
+        self.light_layer = None
+        self.time = time.time()
+
         self.ressource_manager = RessourceManager()
 
     def on_show_view(self):
@@ -153,12 +161,22 @@ class Game(arcade.View):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.camera_sprite, gravity_constant=0)
 
+        self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
 
         self.camera.use()
-        self.game_scene.draw()
+        with self.light_layer:
+            self.game_scene.draw()
+        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
+
+    def get_daytime_brightness(self):
+        """Generate the brightness value to render of the screen"""
+        time_delta = datetime.timedelta(seconds=time.time()-self.time).total_seconds()
+        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
+        return (brightness * 255,) * 3
 
     def on_key_press(self, key, _):
         """Called whenever a key is pressed."""
