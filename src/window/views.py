@@ -189,16 +189,13 @@ class Game(arcade.View):
             self.camera_sprite.center_y += dy
 
     def center_camera_to_camera(self):
-<<<<<<< HEAD
         screen_center_x = self.camera_sprite.center_x - \
             (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - \
             (self.camera.viewport_height / 2)
-=======
         """Centers camera to the camera sprite."""
         screen_center_x = self.camera_sprite.center_x - (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - (self.camera.viewport_height / 2)
->>>>>>> 6278d6372112a0efbb69a7fb1f8974764ae4b868
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)
