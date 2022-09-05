@@ -4,8 +4,8 @@ from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
 
 
 class RessourceManager:
-    """Manage the ressources owned by the player and the maximum
-    amount of ressources that can be stored
+    """Manage the ressources owned by the player and the maximum amount of ressources that can be stored.
+    Ressource is french of resource.
 
     Number of tanks, factories etc needs to be update by the Game class at each refresh
     """
@@ -111,8 +111,8 @@ class RessourceManager:
         Update H2O ressource
         """
         add_h2o = self.h2o_liquid_generator * RESSOURCE_GENERATION['h2o_liquid_generator'] \
-            + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
-            + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
+                  + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
+                  + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
         self.current_ressource['H2O'] += add_h2o
         if self.current_ressource['H2O'] - RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory >= 0:
             self.current_ressource['H2O'] -= RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory
@@ -166,7 +166,7 @@ class RessourceManager:
         Update Energy ressource
         """
         self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel \
-            + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
+                                          + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
 
     def update_money(self) -> None:
         """

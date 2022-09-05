@@ -79,3 +79,11 @@ TANK_STORAGE = {'h2o_tank': 0,
                 'fe_tank': 0,
                 'poly_tank': 0,
                 'ener_tank': 0}
+
+# Resource density
+
+IRON_RICH_TILE = 0.5
+VOLCANO = 0.1
+CARBON_DIOXIDE_GEYSERS = 0.4
+ICY_TILE = 1.0
+CRATER = 33.0
