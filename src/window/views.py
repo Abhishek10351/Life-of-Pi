@@ -4,9 +4,9 @@ import random
 import arcade
 import arcade.gui
 
-from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE,
-                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, IRON_RICH_TILE,
-                    CARBON_DIOXIDE_GEYSERS, VOLCANO, ICY_TILE, CRATER)
+from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS,
+                    CRATER, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, VOLCANO)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
