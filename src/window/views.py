@@ -8,9 +8,7 @@ from config import ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE, STYLE_GOLDEN
 from ressource_manager import RessourceManager
 
 
-
-
-arcade.load_font(str(ASSET_PATH / "fonts" / "DiloWorld-mLJLv.ttf"))
+arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
 
 class Menu(arcade.View):
@@ -64,8 +62,7 @@ class Menu(arcade.View):
         message_box = arcade.gui.UIMessageBox(
             width=400,
             height=300,
-            message_text=
-            """Hey Player, Welcome to Marrrs Explorer.
+            message_text="""Hey Player, Welcome to Marrrs Explorer.
     You were travelling on space and after your rocket fuel finished you got stranded on Mars,
     A.K.A (The Red Planet). Now you have to wait for people from to rescue you and take you back to Earth.
     Until then you have to collect money, minerals and other stuff and use them properly to stay alive.
@@ -110,9 +107,8 @@ class Game(arcade.View):
         self.camera_sprite = None
         self.physics_engine = None
         self.camera: arcade.Camera = None
-        
+
         self.ressource_manager = RessourceManager()
-                                  
 
     def on_show_view(self):
         """Called when the current is switched to this view."""
@@ -131,14 +127,19 @@ class Game(arcade.View):
         for i in range(16, 800, 32):
             for j in range(14, 600, 28):
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / "land.png"))
-                tile.center_x = i*math.cos(rotation_from_axis) + j*math.sin(rotation_from_axis)
-                tile.center_y = j*math.cos(rotation_from_axis) - i*math.sin(rotation_from_axis)
+                tile.center_x = i * \
+                    math.cos(rotation_from_axis) + j * \
+                    math.sin(rotation_from_axis)
+                tile.center_y = j * \
+                    math.cos(rotation_from_axis) - i * \
+                    math.sin(rotation_from_axis)
                 self.game_scene.add_sprite("Tiles", tile)
 
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
-        self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
+        self.camera_sprite = arcade.Sprite(
+            str(ASSET_PATH / "utils" / "camera.png"))
         self.camera_sprite.center_x = 400
         self.camera_sprite.center_y = 300
         self.game_scene.add_sprite("Camera", self.camera_sprite)
@@ -191,8 +192,10 @@ class Game(arcade.View):
         screen_center_y = self.camera_sprite.center_y - \
             (self.camera.viewport_height / 2)
         """Centers camera to the camera sprite."""
-        screen_center_x = self.camera_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.camera_sprite.center_y - (self.camera.viewport_height / 2)
+        screen_center_x = self.camera_sprite.center_x - \
+            (self.camera.viewport_width / 2)
+        screen_center_y = self.camera_sprite.center_y - \
+            (self.camera.viewport_height / 2)
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)
