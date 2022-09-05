@@ -42,7 +42,7 @@ class Menu(arcade.View):
 
         how_to_play_button = arcade.gui.UIFlatButton(
             text="How to Play", width=200, style=STYLE_GOLDEN_TANOI)
-        how_to_play_button.on_click = self._on_click_how_to_play
+        how_to_play_button.on_click = self._on_click_how_to_play_button
 
         exit_button = arcade.gui.UIFlatButton(
             text="Exit", width=200, style=STYLE_GOLDEN_TANOI)
@@ -194,9 +194,9 @@ class Game(arcade.View):
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
         screen_center_x = self.camera_sprite.center_x - \
-                          (self.camera.viewport_width / 2)
+            (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - \
-                          (self.camera.viewport_height / 2)
+            (self.camera.viewport_height / 2)
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)
