@@ -1,7 +1,14 @@
+import math
+
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, STYLE_GOLDEN_TANOI, CAMERA_MOVEMENT_SPEED
+
+from config import ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE
+from ressource_manager import RessourceManager
+
+
+
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "DiloWorld-mLJLv.ttf"))
 
@@ -103,6 +110,9 @@ class Game(arcade.View):
         self.camera_sprite = None
         self.physics_engine = None
         self.camera: arcade.Camera = None
+        
+        self.ressource_manager = RessourceManager()
+                                  
 
     def on_show_view(self):
         """Called when the current is switched to this view."""
@@ -116,15 +126,22 @@ class Game(arcade.View):
         self.camera = arcade.Camera(
             self.main_window.width, self.main_window.height)
 
-        for i in range(25, 800, 50):
-            for j in range(25, 600, 50):
+        rotation_from_axis = VIEWPORT_ANGLE
+
+        for i in range(16, 800, 32):
+            for j in range(14, 600, 28):
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / "land.png"))
-                tile.center_x = i
-                tile.center_y = j
+                tile.center_x = i*math.cos(rotation_from_axis) + j*math.sin(rotation_from_axis)
+                tile.center_y = j*math.cos(rotation_from_axis) - i*math.sin(rotation_from_axis)
                 self.game_scene.add_sprite("Tiles", tile)
 
+<<<<<<< HEAD
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
+=======
+        # this can be renamed to player sprite, if player sprite is decided to be made.
+        self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
+>>>>>>> 6278d6372112a0efbb69a7fb1f8974764ae4b868
         self.camera_sprite.center_x = 400
         self.camera_sprite.center_y = 300
         self.game_scene.add_sprite("Camera", self.camera_sprite)
@@ -137,12 +154,11 @@ class Game(arcade.View):
         self.clear()
 
         self.camera.use()
-
         self.game_scene.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
-
+        # using change because if it is changed to player physics engine is required.
         if key == arcade.key.UP or key == arcade.key.W:
             self.camera_sprite.change_y = CAMERA_MOVEMENT_SPEED
         elif key == arcade.key.DOWN or key == arcade.key.S:
@@ -154,7 +170,6 @@ class Game(arcade.View):
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
-
         if key == arcade.key.UP or key == arcade.key.W:
             self.camera_sprite.change_y = 0
         elif key == arcade.key.DOWN or key == arcade.key.S:
@@ -164,11 +179,26 @@ class Game(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.camera_sprite.change_x = 0
 
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
+        """Called when the mouse is dragged."""
+        if INVERT_MOUSE:
+            self.camera_sprite.center_x -= dx
+            self.camera_sprite.center_y -= dy
+        else:
+            self.camera_sprite.center_x += dx
+            self.camera_sprite.center_y += dy
+
     def center_camera_to_camera(self):
+<<<<<<< HEAD
         screen_center_x = self.camera_sprite.center_x - \
             (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - \
             (self.camera.viewport_height / 2)
+=======
+        """Centers camera to the camera sprite."""
+        screen_center_x = self.camera_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.camera_sprite.center_y - (self.camera.viewport_height / 2)
+>>>>>>> 6278d6372112a0efbb69a7fb1f8974764ae4b868
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)

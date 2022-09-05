@@ -1,3 +1,4 @@
+import math
 import pathlib
 import arcade.color as color
 # Dimensions and title
@@ -32,3 +33,52 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
+VIEWPORT_ANGLE = 0
+
+INVERT_MOUSE = True
+
+
+# Initial ressource
+INITIAL_RESSOURCES_LEVEL_0 = {'H2O' : 100,
+                              'CO2' : 100,
+                              'C' : 100,
+                              'H' : 100,
+                              'O2' : 100,
+                              'Fe' : 100,
+                              'Poly' : 0,
+                              'Ener' : 0,
+                              'Money' : 0}
+
+# Initial storage without improvement
+INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O' : 1000,
+                                      'CO2' : 1000,
+                                      'C' : 1000,
+                                      'H' : 1000,
+                                      'O2' : 1000,
+                                      'Fe' : 1000,
+                                      'Poly' : 1000,
+                                      'Ener' : 1000,
+                                      'Money' : 100000}
+
+RESSOURCE_GENERATION = {'h2o_liquid_generator' : 2 / 60,
+                        'h2o_ice_generator': 1 / 60,
+                        'h2o_vapor_generator': 3 / 60,
+                        'co2_generator' : 2 / 60,
+                        'fe_generator' : 3 / 60,
+                        'co2_breaker_factory' : 1 / 60,
+                        'h2o_breaker_factory' : 1 / 60,
+                        'poly_factory' : 0.5 / 60,
+                        'solar_pannel' : 2 / 60,
+                        'geothermal_generator' : 5 / 60}
+
+TANK_STORAGE = {'h2o_tank' : 0,
+                'co2_tank' : 0,
+                'c_tank' : 0,
+                'h_tank' : 0,
+                'o2_tank' : 0,
+                'fe_tank' : 0,
+                'poly_tank' : 0,
+                'ener_tank' : 0}
+
+
+
