@@ -81,7 +81,8 @@ TANK_STORAGE = {'h2o_tank': 0,
                 'ener_tank': 0}
 
 START_TIME = 0
-DAY_TOTAL_TIME = 20
+#Total day time in second
+DAY_TOTAL_TIME = 240
 BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME / 2, \
                     DAY_TOTAL_TIME / 1.4 , DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
 BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
