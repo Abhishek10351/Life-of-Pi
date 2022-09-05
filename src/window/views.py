@@ -135,13 +135,10 @@ class Game(arcade.View):
                 tile.center_y = j*math.cos(rotation_from_axis) - i*math.sin(rotation_from_axis)
                 self.game_scene.add_sprite("Tiles", tile)
 
-<<<<<<< HEAD
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
-=======
         # this can be renamed to player sprite, if player sprite is decided to be made.
         self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
->>>>>>> 6278d6372112a0efbb69a7fb1f8974764ae4b868
         self.camera_sprite.center_x = 400
         self.camera_sprite.center_y = 300
         self.game_scene.add_sprite("Camera", self.camera_sprite)
