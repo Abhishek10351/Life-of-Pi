@@ -3,10 +3,8 @@ import math
 import arcade
 import arcade.gui
 
-
 from config import ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE
 from ressource_manager import RessourceManager
-
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
@@ -41,9 +39,11 @@ class Menu(arcade.View):
         play_button = arcade.gui.UIFlatButton(
             text="Play", width=200, style=STYLE_GOLDEN_TANOI)
         play_button.on_click = self._on_click_play_button
+
         how_to_play_button = arcade.gui.UIFlatButton(
             text="How to Play", width=200, style=STYLE_GOLDEN_TANOI)
-        how_to_play_button.on_click = self.on_click_open
+        how_to_play_button.on_click = self._on_click_how_to_play
+
         exit_button = arcade.gui.UIFlatButton(
             text="Exit", width=200, style=STYLE_GOLDEN_TANOI)
         exit_button.on_click = self._on_click_exit_button
@@ -58,19 +58,24 @@ class Menu(arcade.View):
             )
         )
 
-    def on_click_open(self, event):
+    def _on_click_how_to_play_button(self, _: arcade.gui.UIOnClickEvent):
         message_box = arcade.gui.UIMessageBox(
             width=400,
             height=300,
-            message_text="""Hey Player, Welcome to Marrrs Explorer.
-    You were travelling on space and after your rocket fuel finished you got stranded on Mars,
-    A.K.A (The Red Planet). Now you have to wait for people from to rescue you and take you back to Earth.
-    Until then you have to collect money, minerals and other stuff and use them properly to stay alive.
-                """
+            message_text="Hey Player, Welcome to Marrrs Explorer."
+                         "You were travelling on space and after your rocket fuel finished you got stranded on Mars, "
+                         "A.K.A (The Red Planet). Now you have to wait for people from to rescue you and take you"
+                         "back to Earth. Until then you have to collect money, minerals and other"
+                         "stuff and use them properly to stay alive.",
+            callback=self._how_to_play_callback)
 
-        )
         self.v_box_message.add(message_box)
+        self.manager.clear()
         self.manager.add(arcade.gui.UIAnchorWidget(child=self.v_box_message))
+
+    def _how_to_play_callback(self, _: arcade.gui.UIOnClickEvent):
+        self.manager.clear()
+        self.manager.add(arcade.gui.UIAnchorWidget(child=self.v_box))
 
     def on_draw(self) -> None:
         """Called when this view should draw."""
@@ -82,7 +87,7 @@ class Menu(arcade.View):
         game = Game(self.main_window)
         self.main_window.show_view(game)
 
-    def _on_click_exit_button(self,  _: arcade.gui.UIOnClickEvent) -> None:
+    def _on_click_exit_button(self, _: arcade.gui.UIOnClickEvent) -> None:
         self.main_window.close()
         arcade.exit()
 
@@ -187,15 +192,11 @@ class Game(arcade.View):
             self.camera_sprite.center_y += dy
 
     def center_camera_to_camera(self):
-        screen_center_x = self.camera_sprite.center_x - \
-            (self.camera.viewport_width / 2)
-        screen_center_y = self.camera_sprite.center_y - \
-            (self.camera.viewport_height / 2)
         """Centers camera to the camera sprite."""
         screen_center_x = self.camera_sprite.center_x - \
-            (self.camera.viewport_width / 2)
+                          (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - \
-            (self.camera.viewport_height / 2)
+                          (self.camera.viewport_height / 2)
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)
