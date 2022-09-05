@@ -1,12 +1,18 @@
+import datetime
 import math
 import random
+import time
 
 import arcade
 import arcade.gui
+from arcade.experimental.lights import LightLayer
+from scipy import interpolate
 
-from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS,
-                    CRATER, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, VOLCANO)
+from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE, CAMERA_MOVEMENT_SPEED,
+                    CARBON_DIOXIDE_GEYSERS, CRATER, ICY_TILE, INVERT_MOUSE,
+                    IRON_RICH_TILE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE,
+                    VOLCANO)
+
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -116,6 +122,9 @@ class Game(arcade.View):
         self.physics_engine = None
         self.camera: arcade.Camera = None
 
+        self.light_layer = None
+        self.time = time.time()
+
         self.ressource_manager = RessourceManager()
 
     def on_show_view(self):
@@ -152,12 +161,22 @@ class Game(arcade.View):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.camera_sprite, gravity_constant=0)
 
+        self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
 
         self.camera.use()
-        self.game_scene.draw()
+        with self.light_layer:
+            self.game_scene.draw()
+        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
+
+    def get_daytime_brightness(self):
+        """Generate the brightness value to render of the screen"""
+        time_delta = datetime.timedelta(seconds=time.time()-self.time).total_seconds()
+        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
+        return (brightness * 255,) * 3
 
     def on_key_press(self, key, _):
         """Called whenever a key is pressed."""
