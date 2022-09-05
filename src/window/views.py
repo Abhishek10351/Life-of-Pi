@@ -8,11 +8,10 @@ import arcade.gui
 from arcade.experimental.lights import LightLayer
 from scipy import interpolate
 
-from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE, CAMERA_MOVEMENT_SPEED,
-                    CARBON_DIOXIDE_GEYSERS, CRATER, ICY_TILE, INVERT_MOUSE,
-                    IRON_RICH_TILE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE,
-                    VOLCANO)
-
+from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
+                    CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
+                    DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, VOLCANO)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
