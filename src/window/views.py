@@ -8,7 +8,7 @@ import arcade.gui
 from arcade.experimental.lights import Light, LightLayer
 
 from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE,
-                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, START_TIME,
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE,
                     BRIGHTNESS_TIME, BRIGHTNESS_VALUE, DAY_TOTAL_TIME)
 from ressource_manager import RessourceManager
 
@@ -120,7 +120,6 @@ class Game(arcade.View):
         self.camera: arcade.Camera = None
         
         self.light_layer = None
-        self.day_time = START_TIME
         self.time = time.time()
 
         self.ressource_manager = RessourceManager()
@@ -174,7 +173,7 @@ class Game(arcade.View):
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
     def get_daytime_brightness(self):
-        """Generate the brightness of the screen"""
+        """Generate the brightness value to render of the screen"""
         time_delta = datetime.timedelta(seconds=time.time()-self.time).total_seconds()
         brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
         return (brightness * 255,) * 3 
