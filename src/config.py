@@ -1,6 +1,8 @@
 import math
 import pathlib
-import arcade.color as color
+
+from arcade import color
+
 # Dimensions and title
 SCREEN_TITLE = "Marrrs Explorer"
 SCREEN_HEIGHT = 600
@@ -33,7 +35,7 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
-VIEWPORT_ANGLE = 0
+VIEWPORT_ANGLE = math.pi / 4
 INVERT_MOUSE = True
 
 # Initial ressource

@@ -3,7 +3,8 @@ import math
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE
+from config import (ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE,
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -159,27 +160,27 @@ class Game(arcade.View):
         self.camera.use()
         self.game_scene.draw()
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key, _):
         """Called whenever a key is pressed."""
         # using change because if it is changed to player physics engine is required.
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in (arcade.key.UP, arcade.key.W):
             self.camera_sprite.change_y = CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.camera_sprite.change_y = -CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
 
-    def on_key_release(self, key, modifiers):
+    def on_key_release(self, key, _):
         """Called when the user releases a key."""
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in (arcade.key.UP, arcade.key.W):
             self.camera_sprite.change_y = 0
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.camera_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.camera_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = 0
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
