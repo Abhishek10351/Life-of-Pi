@@ -21,7 +21,7 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with flake8
       run: |
-        flake8 --max-line-length=121
+        flake8 --max-line-length=121 --ignore=E127
     - name: Running isort
       run: |
         isort src -c
