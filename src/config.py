@@ -80,7 +80,17 @@ TANK_STORAGE = {'h2o_tank': 0,
                 'poly_tank': 0,
                 'ener_tank': 0}
 
+# Resource density
+
+IRON_RICH_TILE = 0.5
+VOLCANO = 0.1
+CARBON_DIOXIDE_GEYSERS = 0.4
+ICY_TILE = 1.0
+CRATER = 33.0
+LAND = 100 - (IRON_RICH_TILE + VOLCANO + CARBON_DIOXIDE_GEYSERS + ICY_TILE + CRATER)
+
 # Total day time in second
+
 DAY_TOTAL_TIME = 240
 BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME / 2,
                    DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]

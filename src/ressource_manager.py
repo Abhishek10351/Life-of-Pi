@@ -4,8 +4,8 @@ from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
 
 
 class RessourceManager:
-    """Manage the ressources owned by the player and the maximum
-    amount of ressources that can be stored
+    """Manage the ressources owned by the player and the maximum amount of ressources that can be stored.
+    Ressource is french of resource.
 
     Number of tanks, factories etc needs to be update by the Game class at each refresh
     """
@@ -166,7 +166,7 @@ class RessourceManager:
         Update Energy ressource
         """
         self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel \
-            + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
+                                          + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
 
     def update_money(self) -> None:
         """
