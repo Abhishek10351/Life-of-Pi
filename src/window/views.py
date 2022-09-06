@@ -1,5 +1,6 @@
 import datetime
 import math
+import random
 import time
 
 import arcade
@@ -8,8 +9,9 @@ from arcade.experimental.lights import LightLayer
 from scipy import interpolate
 
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
-                    CAMERA_MOVEMENT_SPEED, DAY_TOTAL_TIME, INVERT_MOUSE,
-                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE)
+                    CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
+                    DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
+                    STYLE_GOLDEN_TANOI, VOLCANO, LAND)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -101,6 +103,14 @@ class Menu(arcade.View):
         self.manager.disable()
 
 
+def rect2isometric(x, y):
+    """Rotates the axis by 45 degrees and then compresses the y axis by a factor of sqrt(2)."""
+    iso_x_45 = x * (math.sqrt(2) / 2) + y * (math.sqrt(2) / 2)
+    iso_y_45 = -x * (math.sqrt(2) / 2) + y * (math.sqrt(2) / 2)
+    compress_iso_y_45 = -iso_y_45 / math.sqrt(2)
+    return iso_x_45, compress_iso_y_45
+
+
 class Game(arcade.View):
     """
     Main game logic goes here.
@@ -136,19 +146,19 @@ class Game(arcade.View):
         self.camera = arcade.Camera(
             self.main_window.width, self.main_window.height)
 
-        rotation_from_axis = VIEWPORT_ANGLE
-
-        for i in range(-775, 800, 50):
-            for j in range(-575, 600, 50):
-                tile = arcade.Sprite(str(ASSET_PATH / "tiles" / "land.png"))
-                tile.center_x = i * \
-                    math.cos(rotation_from_axis) + j * \
-                    math.sin(rotation_from_axis)
-                tile.center_y = j * \
-                    math.cos(rotation_from_axis) - i * \
-                    math.sin(rotation_from_axis)
+        # for i in range(-775, 800, 50):
+        #    for j in range(-575, 600, 50):
+        for i in range(-10, 10, 1):
+            for j in range(-10, 10, 1):
+                file_name = random.choices(["crater_iso.png", "fe_crater_iso.png", "geyser_iso.png",
+                                            "ice_iso.png", "land_iso.png", "volcano_iso.png", ],
+                                           [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
+                tile = arcade.Sprite(str(ASSET_PATH / "tiles" / file_name))
+                # tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
+                # tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
+                (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
+                
                 self.game_scene.add_sprite("Tiles", tile)
-
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
@@ -178,7 +188,7 @@ class Game(arcade.View):
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
-        time_delta = datetime.timedelta(seconds=time.time()-self.time).total_seconds()
+        time_delta = datetime.timedelta(seconds=time.time() - self.time).total_seconds()
         brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
         return (brightness * 255,) * 3
 
@@ -232,9 +242,9 @@ class Game(arcade.View):
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
         screen_center_x = self.camera_sprite.center_x - \
-            (self.camera.viewport_width / 2)
+                          (self.camera.viewport_width / 2)
         screen_center_y = self.camera_sprite.center_y - \
-            (self.camera.viewport_height / 2)
+                          (self.camera.viewport_height / 2)
 
         camera_centered = screen_center_x, screen_center_y
         self.camera.move_to(camera_centered)
