@@ -34,9 +34,7 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
 VIEWPORT_ANGLE = 0
-
 INVERT_MOUSE = True
-
 
 # Initial ressource
 INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
