@@ -8,4 +8,3 @@ if __name__ == '__main__':
     menu = Menu(game)
     game.show_view(menu)
     arcade.run()
-    
