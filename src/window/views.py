@@ -102,7 +102,12 @@ class Menu(arcade.View):
     def on_hide_view(self):
         self.manager.disable()
 
-
+def rect2isometric(x,y):
+    x2 = x*(math.sqrt(2)/2) + y*(math.sqrt(2)/2)
+    y2 = -x*(math.sqrt(2)/2) + y*(math.sqrt(2)/2)
+    y2 = -y2/math.sqrt(2)
+    return (x2,y2)
+    
 class Game(arcade.View):
     """
     Main game logic goes here.
@@ -139,14 +144,17 @@ class Game(arcade.View):
             self.main_window.width, self.main_window.height)
 
         rotation_from_axis = VIEWPORT_ANGLE
-        for i in range(-775, 800, 50):
-            for j in range(-575, 600, 50):
+        #for i in range(-775, 800, 50):
+        #    for j in range(-575, 600, 50):
+        for i in range(-10, 10, 1):
+            for j in range(-10, 10, 1):
                 file_name = random.choices(["crater_iso.png", "fe_crater_iso.png", "geyser_iso.png",
                                             "ice_iso.png", "land_iso.png", "volcano_iso.png", ],
                                            [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / file_name))
-                tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
-                tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
+                #tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
+                #tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
+                (tile.center_x, tile.center_y) = rect2isometric(80*i+40, 80*j+40)
                 self.game_scene.add_sprite("Tiles", tile)
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
