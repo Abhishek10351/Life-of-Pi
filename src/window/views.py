@@ -131,6 +131,7 @@ class Game(arcade.View):
 
         self.light_layer = None
         self.time = time.time()
+        self.time_delta = 0
 
         self.ressource_manager = RessourceManager()
 
@@ -138,12 +139,35 @@ class Game(arcade.View):
         self.screen_center_x = 0
         self.screen_center_y = 0
 
+        self.manager = None
+        self.v_box: arcade.gui.UIBoxLayout = None
+        self.console_active = False
+
+        self.debugging_console = None
+        self.debugging_console_tex_inp = None
+        self.debugging_console_tex_out = None
+        self.debugging_console_tex = None
+
     def on_show_view(self):
         """Called when the current is switched to this view."""
         self.setup()
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.manager = arcade.gui.UIManager()
+        self.v_box = arcade.gui.UIBoxLayout()
+        self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+        tex = arcade.texture.Texture("tex creator")
+        self.debugging_console_tex_inp = tex.create_filled(color=(100, 0, 0, 150), name="debug console in",
+                                                           size=(self.main_window.width, 25))
+        self.debugging_console_tex_out = tex.create_filled(color=(0, 100, 0, 150), name="debug console out",
+                                                           size=(self.main_window.width, 25))
+        self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+        self.v_box.add(self.debugging_console_tex)
+
+        self.manager.add(arcade.gui.UIAnchorWidget(child=self.v_box, anchor_y="bottom"))
+        self.manager.enable()
+
         self.game_scene = arcade.Scene()
         self.game_scene.add_sprite_list("Tiles")
         self.game_scene.add_sprite_list("Selected Tile")
@@ -191,10 +215,13 @@ class Game(arcade.View):
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
+        if self.console_active:
+            self.manager.draw()
+
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
-        time_delta = datetime.timedelta(seconds=time.time() - self.time).total_seconds()
-        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
+        self.time_delta = datetime.timedelta(seconds=time.time() - self.time).total_seconds()
+        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(self.time_delta % DAY_TOTAL_TIME)
         return (brightness * 255,) * 3
 
     def on_key_press(self, key, _):
@@ -208,6 +235,32 @@ class Game(arcade.View):
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
+        elif key == arcade.key.F4:
+            self.manager.enable()
+            if self.console_active:
+                self.manager.disable()
+            self.console_active = not self.console_active
+        elif key == arcade.key.ENTER:
+            if not self.console_active:
+                return
+            if self.debugging_console.text[1:] in ('clear', 'cls'):
+                self.v_box.clear()
+                self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+                self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(self.debugging_console_tex)
+            else:
+                out = arcade.gui.UILabel(text=str(eval(f"{self.debugging_console.text[1:]}")),
+                                         width=self.main_window.width, height=25, text_color=(255, 255, 255))
+                out_tex = out.with_background(self.debugging_console_tex_out)
+                self.v_box.remove(self.debugging_console_tex)
+                prev = arcade.gui.UILabel(text=self.debugging_console.text,
+                                          width=self.main_window.width, height=25, text_color=(0, 0, 0))
+                prev_tex = prev.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(prev_tex)
+                self.v_box.add(out_tex)
+                self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+                self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(self.debugging_console_tex)
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
@@ -238,7 +291,6 @@ class Game(arcade.View):
             self.main_window.mouse_left_is_pressed = True
             actual_x = x + self.screen_center_x
             actual_y = y + self.screen_center_y
-            print(self.camera_sprite.center_x, self.camera_sprite.center_y)
             rect = arcade.get_sprites_at_point((actual_x, actual_y), self.game_scene.get_sprite_list("Tiles"))
             if rect:
                 rect = rect[0]
@@ -256,9 +308,9 @@ class Game(arcade.View):
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
         self.screen_center_x = self.camera_sprite.center_x - \
-                          (self.camera.viewport_width / 2)
+                               (self.camera.viewport_width / 2)
         self.screen_center_y = self.camera_sprite.center_y - \
-                          (self.camera.viewport_height / 2)
+                               (self.camera.viewport_height / 2)
 
         camera_centered = self.screen_center_x, self.screen_center_y
         self.camera.move_to(camera_centered)
