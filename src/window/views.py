@@ -141,8 +141,8 @@ class Game(arcade.View):
         rotation_from_axis = VIEWPORT_ANGLE
         for i in range(-775, 800, 50):
             for j in range(-575, 600, 50):
-                file_name = random.choices(["crater.png", "fe_crater.png", "geyser.png",
-                                            "ice.png", "land.png", "volcano.png", ],
+                file_name = random.choices(["crater_iso.png", "fe_crater_iso.png", "geyser_iso.png",
+                                            "ice_iso.png", "land_iso.png", "volcano_iso.png", ],
                                            [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / file_name))
                 tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
