@@ -111,8 +111,8 @@ class RessourceManager:
         Update H2O ressource
         """
         add_h2o = self.h2o_liquid_generator * RESSOURCE_GENERATION['h2o_liquid_generator'] \
-                  + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
-                  + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
+            + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
+            + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
         self.current_ressource['H2O'] += add_h2o
         if self.current_ressource['H2O'] - RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory >= 0:
             self.current_ressource['H2O'] -= RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory
