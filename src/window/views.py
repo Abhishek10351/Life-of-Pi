@@ -14,6 +14,7 @@ from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
+import gfx_isometric
 
 class Menu(arcade.View):
     """
@@ -148,7 +149,10 @@ class Game(arcade.View):
                     math.cos(rotation_from_axis) - i * \
                     math.sin(rotation_from_axis)
                 self.game_scene.add_sprite("Tiles", tile)
-
+        
+        # for structures
+        self.structspritelist = gfx_isometric.StructuresSpriteList()
+        
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
@@ -170,7 +174,10 @@ class Game(arcade.View):
         self.camera.use()
         with self.light_layer:
             self.game_scene.draw()
-        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
+            gfx_isometric.draw_grids()
+            self.structspritelist.draw()
+        #self.light_layer.draw(ambient_color=self.get_daytime_brightness())
+        self.light_layer.draw(ambient_color=(255,255,255))
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
