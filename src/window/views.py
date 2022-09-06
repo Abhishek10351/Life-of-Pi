@@ -1,9 +1,15 @@
+import datetime
 import math
+import time
 
 import arcade
 import arcade.gui
+from arcade.experimental.lights import LightLayer
+from scipy import interpolate
 
-from config import ASSET_PATH, CAMERA_MOVEMENT_SPEED, INVERT_MOUSE, STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE
+from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
+                    CAMERA_MOVEMENT_SPEED, DAY_TOTAL_TIME, INVERT_MOUSE,
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -113,6 +119,9 @@ class Game(arcade.View):
         self.physics_engine = None
         self.camera: arcade.Camera = None
 
+        self.light_layer = None
+        self.time = time.time()
+
         self.ressource_manager = RessourceManager()
 
     def on_show_view(self):
@@ -152,6 +161,8 @@ class Game(arcade.View):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.camera_sprite, gravity_constant=0)
 
+        self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
@@ -161,27 +172,38 @@ class Game(arcade.View):
         if self.main_window.mouse_left_is_pressed:
             pass
 
-    def on_key_press(self, key, modifiers):
+        with self.light_layer:
+            self.game_scene.draw()
+        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
+
+    def get_daytime_brightness(self):
+        """Generate the brightness value to render of the screen"""
+        time_delta = datetime.timedelta(seconds=time.time()-self.time).total_seconds()
+        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
+        return (brightness * 255,) * 3
+
+
+    def on_key_press(self, key, _):
         """Called whenever a key is pressed."""
         # using change because if it is changed to player physics engine is required.
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in (arcade.key.UP, arcade.key.W):
             self.camera_sprite.change_y = CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.camera_sprite.change_y = -CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
 
-    def on_key_release(self, key, modifiers):
+    def on_key_release(self, key, _):
         """Called when the user releases a key."""
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in (arcade.key.UP, arcade.key.W):
             self.camera_sprite.change_y = 0
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.camera_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.camera_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = 0
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):

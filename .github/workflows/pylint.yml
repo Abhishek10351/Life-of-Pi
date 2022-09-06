@@ -18,7 +18,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
+        pip install isort
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --errors-only
+        pylint src --max-line-length=121 --disable=C0114,C0201,C0206,E1101,R0902,W
+        isort src -c

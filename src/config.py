@@ -1,6 +1,8 @@
 import math
 import pathlib
-import arcade.color as color
+
+from arcade import color
+
 # Dimensions and title
 SCREEN_TITLE = "Marrrs Explorer"
 SCREEN_HEIGHT = 600
@@ -33,7 +35,7 @@ SRC_PATH = pathlib.Path(__file__).resolve().parent.parent / "src"
 
 # Camera
 CAMERA_MOVEMENT_SPEED = 5
-VIEWPORT_ANGLE = 0
+VIEWPORT_ANGLE = math.pi / 4
 INVERT_MOUSE = True
 
 # Initial ressource
@@ -77,3 +79,9 @@ TANK_STORAGE = {'h2o_tank': 0,
                 'fe_tank': 0,
                 'poly_tank': 0,
                 'ener_tank': 0}
+
+# Total day time in second
+DAY_TOTAL_TIME = 240
+BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME / 2,
+                   DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
+BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
