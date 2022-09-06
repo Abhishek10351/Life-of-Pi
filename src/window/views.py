@@ -138,8 +138,8 @@ class Game(arcade.View):
 
         rotation_from_axis = VIEWPORT_ANGLE
 
-        for i in range(16, 800, 32):
-            for j in range(14, 600, 28):
+        for i in range(-775, 800, 50):
+            for j in range(-575, 600, 50):
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / "land.png"))
                 tile.center_x = i * \
                     math.cos(rotation_from_axis) + j * \
