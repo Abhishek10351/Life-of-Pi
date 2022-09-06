@@ -158,6 +158,8 @@ class Game(arcade.View):
 
         self.camera.use()
         self.game_scene.draw()
+        if self.main_window.mouse_left_is_pressed:
+            pass
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
@@ -190,6 +192,20 @@ class Game(arcade.View):
         else:
             self.camera_sprite.center_x += dx
             self.camera_sprite.center_y += dy
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.main_window.mouse_x = x
+        self.main_window.mouse_y = y
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.main_window.mouse_left_is_pressed = True
+            rect = arcade.get_sprites_at_point(
+                (x, y), self.game_scene.get_sprite_list("Tiles"))
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.main_window.mouse_left_is_pressed = False
 
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
