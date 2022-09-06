@@ -11,7 +11,7 @@ from scipy import interpolate
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    STYLE_GOLDEN_TANOI, VOLCANO, LAND)
+                    LAND, STYLE_GOLDEN_TANOI, VOLCANO)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -134,6 +134,10 @@ class Game(arcade.View):
 
         self.ressource_manager = RessourceManager()
 
+        self.selected_tile = None
+        self.screen_center_x = 0
+        self.screen_center_y = 0
+
     def on_show_view(self):
         """Called when the current is switched to this view."""
         self.setup()
@@ -142,6 +146,7 @@ class Game(arcade.View):
         """Set up the game here. Call this function to restart the game."""
         self.game_scene = arcade.Scene()
         self.game_scene.add_sprite_list("Tiles")
+        self.game_scene.add_sprite_list("Selected Tile")
 
         self.camera = arcade.Camera(
             self.main_window.width, self.main_window.height)
@@ -157,6 +162,7 @@ class Game(arcade.View):
                 # tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
                 # tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
                 (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
+
                 self.game_scene.add_sprite("Tiles", tile)
         self.camera_sprite = arcade.Sprite(
             str(ASSET_PATH / "utils" / "camera.png"))
@@ -177,6 +183,10 @@ class Game(arcade.View):
         self.clear()
 
         self.camera.use()
+        self.game_scene.draw()
+        if self.main_window.mouse_left_is_pressed:
+            pass
+
         with self.light_layer:
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
@@ -219,14 +229,38 @@ class Game(arcade.View):
             self.camera_sprite.center_x += dx
             self.camera_sprite.center_y += dy
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.main_window.mouse_x = x
+        self.main_window.mouse_y = y
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.main_window.mouse_left_is_pressed = True
+            actual_x = x + self.screen_center_x
+            actual_y = y + self.screen_center_y
+            print(self.camera_sprite.center_x, self.camera_sprite.center_y)
+            rect = arcade.get_sprites_at_point((actual_x, actual_y), self.game_scene.get_sprite_list("Tiles"))
+            if rect:
+                rect = rect[0]
+                self.selected_tile = arcade.Sprite(str(ASSET_PATH / "sprites_iso" / "select001_iso.png"))
+                self.selected_tile.center_x = rect.center_x
+                self.selected_tile.center_y = rect.center_y
+                self.game_scene.remove_sprite_list_by_name("Selected Tile")
+                self.game_scene.add_sprite_list("Selected Tile")
+                self.game_scene.add_sprite("Selected Tile", self.selected_tile)
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.main_window.mouse_left_is_pressed = False
+
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
-        screen_center_x = self.camera_sprite.center_x - \
+        self.screen_center_x = self.camera_sprite.center_x - \
                           (self.camera.viewport_width / 2)
-        screen_center_y = self.camera_sprite.center_y - \
+        self.screen_center_y = self.camera_sprite.center_y - \
                           (self.camera.viewport_height / 2)
 
-        camera_centered = screen_center_x, screen_center_y
+        camera_centered = self.screen_center_x, self.screen_center_y
         self.camera.move_to(camera_centered)
 
     def on_update(self, delta_time):
