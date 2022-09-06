@@ -11,7 +11,7 @@ from scipy import interpolate
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, VOLCANO)
+                    STYLE_GOLDEN_TANOI, VIEWPORT_ANGLE, VOLCANO, LAND)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -143,7 +143,7 @@ class Game(arcade.View):
             for j in range(-575, 600, 50):
                 file_name = random.choices(["crater.png", "fe_crater.png", "geyser.png",
                                             "ice.png", "land.png", "volcano.png", ],
-                                           [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, 65, VOLCANO])[0]
+                                           [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
                 tile = arcade.Sprite(str(ASSET_PATH / "tiles" / file_name))
                 tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
                 tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
