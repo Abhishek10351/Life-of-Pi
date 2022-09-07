@@ -3,7 +3,7 @@
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH
+from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH
 from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
@@ -317,16 +317,18 @@ class SideBar:
             'C:',
             'H:',
             'O2:',
-            'Polymers:'
+            'Polymers:',
+            'Food:',
+            'Crew'
         ]
         for (i, line) in enumerate(text_lines):
-            h = RES_TEXT_HEIGHT - 18 * i
+            h = RES_TEXT_HEIGHT - 15 * i
             arcade.draw_text(line, 90, h, arcade.color.GREEN, font_size=12,
                              anchor_x="right", anchor_y="center")
-        keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly']
+        keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food', 'Crew']
 
         for (i, key) in enumerate(keys):
-            h = RES_TEXT_HEIGHT - 18 * i
+            h = RES_TEXT_HEIGHT - 15 * i
             have = self.parent.ressource_manager.current_ressource[key]
             max_cap = self.parent.ressource_manager.maximum_ressource[key]
             line = '(%d / %d)' % (have, max_cap)
@@ -340,13 +342,19 @@ class SideBar:
                 text_col = arcade.color.RED
             if have >= max_cap:
                 line += ' Full! Build more '
-                if key in ['Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly']:
+                if key in ['Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food']:
                     line += 'storage tanks'
                 elif key in ['Ener']:
                     line += 'batteries'
+                elif key in ['Crew']:
+                    line += 'bases'
             arcade.draw_text(line, 100, h, text_col, font_size=12,
                              anchor_x="left", anchor_y="center")
 
+    def draw_time_left(self):
+        arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
+                         (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
+    
     # used to display some information about the current tile selected by
     # player from Main View
     def DisplayTile(self, coords):
@@ -360,5 +368,6 @@ class SideBar:
         self.sb_manager.draw()
         self.draw_build_text()
         self.draw_res_disp()
+        self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()

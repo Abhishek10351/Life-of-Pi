@@ -43,6 +43,8 @@ VIEWPORT_ANGLE = math.pi / 4
 INVERT_MOUSE = True
 
 # Initial ressource
+
+RESSOURCES_LIST = ['H2O', 'CO2', 'C', 'H', 'O2', 'Fe', 'Poly', 'Ener', 'Money', 'Food']
 INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'CO2': 100,
                               'C': 100,
@@ -50,8 +52,10 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'O2': 100,
                               'Fe': 100,
                               'Poly': 0,
-                              'Ener': 0,
-                              'Money': 0}
+                              'Ener': 100,
+                              'Money': 0,
+                              'Food' : 100,
+                              'Crew' : 1}
 
 # Initial storage without improvement
 INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
@@ -62,7 +66,9 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
                                       'Fe': 1000,
                                       'Poly': 1000,
                                       'Ener': 1000,
-                                      'Money': 100000}
+                                      'Money': 100000,
+                                      'Food': 1000,
+                                      'Crew':1}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_ice_generator': 1 / 60,
@@ -73,17 +79,75 @@ RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_breaker_factory': 1 / 60,
                         'poly_factory': 0.5 / 60,
                         'solar_pannel': 2 / 60,
-                        'geothermal_generator': 5 / 60}
+                        'geothermal_generator': 5 / 60,
+                        'garden': 2 / 60}
 
-TANK_STORAGE = {'h2o_tank': 0,
-                'co2_tank': 0,
-                'c_tank': 0,
-                'h_tank': 0,
-                'o2_tank': 0,
-                'fe_tank': 0,
-                'poly_tank': 0,
-                'ener_tank': 0}
+TANK_STORAGE = {'h2o_tank': 100,
+                'co2_tank': 100,
+                'c_tank': 100,
+                'h_tank': 100,
+                'o2_tank': 100,
+                'fe_tank': 100,
+                'poly_tank': 100,
+                'ener_tank': 100,
+                'food_tank': 100,
+                'bases' : 5}
 
+BUILDING_LIST =    ['h2o_liquid_generator',
+                    'h2o_ice_generator',
+                    'h2o_vapor_generator',
+                    'co2_generator',
+                    'fe_generator',
+                    'co2_breaker_factory',
+                    'h2o_breaker_factory',
+                    'poly_factory',
+                    'solar_pannel',
+                    'geothermal_generator',
+                    'garden',
+                    'h2o_tank',
+                    'co2_tank',
+                    'c_tank',
+                    'h_tank',
+                    'o2_tank',
+                    'fe_tank',
+                    'poly_tank',
+                    'ener_tank',
+                    'food_tank',
+                    'bases']
+
+CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
+                            'h2o_ice_generator': 1,
+                            'h2o_vapor_generator': 3,
+                            'co2_generator': 2,
+                            'fe_generator': 1,
+                            'co2_breaker_factory': 3,
+                            'h2o_breaker_factory': 2, 
+                            'poly_factory': 2, 
+                            'solar_pannel': 1, 
+                            'geothermal_generator': 5, 
+                            'garden': 1, 
+                            'h2o_tank': 1, 
+                            'co2_tank': 1,
+                            'c_tank': 1, 
+                            'h_tank': 1, 
+                            'o2_tank': 1, 
+                            'fe_tank': 1, 
+                            'poly_tank': 1,
+                            'ener_tank': 1, 
+                            'food_tank': 1, 
+                            'bases': 0}
+
+ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
+                    'h2o_ice_generator': 1 / 60,
+                    'h2o_vapor_generator': 5 / 60,
+                    'co2_generator': 1 / 60,
+                    'fe_generator': 1 / 60,
+                    'co2_breaker_factory': 2 / 60,
+                    'h2o_breaker_factory': 2 / 60, 
+                    'poly_factory': 1 / 60, 
+                    'garden': 1 / 60,  
+                    'bases': 1 / 60}
+        
 # Resource density
 
 IRON_RICH_TILE = 0.5
@@ -101,7 +165,6 @@ BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME /
 BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
 
 O2_CONSUMPTION = 2 / 60
-PARTY_TIME = 600
 
 # Tile build dict
 
@@ -112,3 +175,7 @@ TILE_TYPE_BUILD = {"crater": (),
                    "land": ("base", "garden", "solar", "tank", "battery"),
                    "volcano": "geo"
                    }
+
+FOOD_CONSUMPTION_PER_MEMBER_CREW = 2 / 60
+CREW_PER_BASES = 5
+PARTY_TIME = 600
