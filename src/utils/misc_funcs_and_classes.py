@@ -32,11 +32,12 @@ class Tile(arcade.Sprite):
         self.isometric_x = 0
         self.isometric_y = 0
 
-    def check_build(self, build_type: str):
+    def check_build(self, build_type: str, lst_neighbours):
         if build_type in TILE_TYPE_BUILD[self.tile_type]:
             return True
-        elif build_type == "poly_factory":
-            if "poly" in self.tile_type:
+        elif build_type == "factory_poly":
+            print(lst_neighbours)
+            if "tank" in lst_neighbours:
                 return True
         return False
 
@@ -57,6 +58,9 @@ class TileList(arcade.SpriteList):
     def get(self, isometric_x: int, isometric_y: int):
         return self.tile_coords_dict.get((isometric_x, isometric_y), None)
 
+    def get_all_tile_type(self):
+        return [obj.tile_type for obj in self]
+    
     def replace(self, sprite: Tile, other: Tile):
         """Replaces tile."""
         other.isometric_x = sprite.isometric_x
@@ -68,13 +72,37 @@ class TileList(arcade.SpriteList):
 
     def get_neighbours(self, sprite: Tile) -> List[Tile]:
         """Returns a list containing the neighbours of tile in the format (N, NE, E, SE, S, SW, W, NW)"""
-        north_tile = self.get(sprite.isometric_x, sprite.isometric_y + 1)
-        north_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y + 1)
-        east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y)
-        south_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y - 1)
-        south_tile = self.get(sprite.isometric_x, sprite.isometric_y - 1)
-        south_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y - 1)
-        west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y)
-        north_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y + 1)
+        try:
+            north_tile = self.get(sprite.isometric_x, sprite.isometric_y + 1).tile_type
+        except AttributeError:
+            north_tile = ''
+        try:
+            north_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y + 1).tile_type
+        except AttributeError:
+            north_east_tile = ''
+        try:
+            east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y).tile_type
+        except AttributeError:
+            east_tile = ''
+        try:
+            south_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y - 1).tile_type
+        except AttributeError:
+            south_east_tile = ''
+        try:
+            south_tile = self.get(sprite.isometric_x, sprite.isometric_y - 1).tile_type
+        except AttributeError:
+            south_tile = ''
+        try:
+            south_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y - 1).tile_type
+        except AttributeError:
+            south_west_tile = ''
+        try:
+            west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y).tile_type
+        except AttributeError:
+            west_tile = ''
+        try:
+            north_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y + 1).tile_type
+        except AttributeError:
+            north_west_tile = ''
         return (north_tile, north_east_tile, east_tile, south_east_tile,
                 south_tile, south_west_tile, west_tile, north_west_tile)

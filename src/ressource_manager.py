@@ -1,3 +1,4 @@
+from operator import ge
 from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
 
                     INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
@@ -93,7 +94,7 @@ class RessourceManager:
         #if energy comes down to 0, will be turn to False and factories wont work anymore until energy comes back to 0
         self.enable_factory = True
 
-    def update(self) -> None:
+    def update(self, tile_sprite_list) -> None:
         """
         Update the amount of stored ressource when called
         """
@@ -111,6 +112,34 @@ class RessourceManager:
 
         self._check_maximum_overpass()
 
+    def update_building(self, build_type) -> None:
+        possible_tile_type = {'base':['bases'],
+                                'garden':['garden'],
+                                'solar':['solar_pannel'],
+                                'geo':['geothermal_generator'],
+                                'battery':['ener_tank'],
+                                'iceextract':['h2o_ice_generator'],
+                                'co2extract':['co2_generator'],
+                                'fe_mining':['fe_generator'],
+                                'factory_co2':['co2_breaker_factory'],
+                                'factory_h2o':['h2o_breaker_factory'],
+                                'factory_poly':['poly_factory'],
+                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank']}
+        for building in possible_tile_type[build_type]:
+            setattr(self, building, getattr(self, building) + 1)
+        
+        
+    
+    def check_for_resource(self, resource_to_build) -> bool:
+        for key, item in resource_to_build.items():
+            if self.current_ressource[key] < item:
+                return False
+        return True
+
+    def consume_resource_to_build(self, resource_to_build) -> None:
+        for key, item in resource_to_build.items():
+            self.current_ressource[key] -= item
+    
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
         self.current_ressource['O2'] -= O2_CONSUMPTION

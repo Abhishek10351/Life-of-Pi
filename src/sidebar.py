@@ -132,7 +132,7 @@ class SideBar:
         self.msg_to = 0
 
         self.buildicons_textures = {'base': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "base_iso.png")),
-                                    'garden': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "foodpod_iso.png")),
+                                    'garden': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "garden_iso.png")),
                                     'solar': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "solargen_iso.png")),
                                     'geo': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "geotherm001_iso.png")),
                                     'battery': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "battery_iso.png")),

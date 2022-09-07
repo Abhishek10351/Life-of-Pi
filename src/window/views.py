@@ -11,7 +11,7 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
                     LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    STYLE_GOLDEN_TANOI, VOLCANO)
+                    STYLE_GOLDEN_TANOI, VOLCANO, RESSOURCE_TO_BUILD)
 from ressource_manager import RessourceManager
 from sidebar import SideBar
 from utils import Tile, TileList, rect2isometric
@@ -209,19 +209,19 @@ class Game(arcade.View):
                                    "factory_h2o": "factory_h2o_iso.png",
                                    "base": "base_iso.png",
                                    "garden": "garden_iso.png",
-                                   "solar": "solorgen_iso.png",
+                                   "solar": "solargen_iso.png",
                                    "tank": "tank_iso.png",
                                    "battery": "battery_iso.png",
-                                   "geo": "geotherm001_iso.png"}
-        if self.selected_tile.check_build(build_type):
+                                   "geo": "geotherm001_iso.png",
+                                   "factory_poly": "factory_poly_iso.png"}
+        if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
+        and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
             prev_tile = self.selected_tile
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
-                                      build_type + self.selected_tile.tile_type)
+                                      build_type)
             self.tile_sprite_list.replace(prev_tile, self.selected_tile)
-            if build_type == "tank":
-                # makes the neighbouring tile eligible to build a polymer factory.
-                for neighbour_tile in self.tile_sprite_list.get_neighbours(self.selected_tile):
-                    neighbour_tile.tile_type += "poly"
+            self.ressource_manager.consume_resource_to_build(RESSOURCE_TO_BUILD[build_type])
+            self.ressource_manager.update_building(build_type)
             return True
         return False
 
@@ -369,8 +369,7 @@ class Game(arcade.View):
         self.center_camera_to_camera()
 
         self.sidebar.update()
-
-        self.ressource_manager.update()
+        self.ressource_manager.update(self.tile_sprite_list)
         self.check_win_loose()
 
 

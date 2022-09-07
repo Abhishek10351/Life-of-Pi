@@ -147,6 +147,19 @@ ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                     'poly_factory': 1 / 60, 
                     'garden': 1 / 60,  
                     'bases': 1 / 60}
+
+RESSOURCE_TO_BUILD = {'base': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['bases']},
+                        'garden': {'H2O': 30, 'CO2': 10, 'H': 0,'C': 0,'Fe': 0,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['garden']},
+                        'solar': {'H2O': 0, 'CO2': 0, 'H': 10,'C': 10,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['solar_pannel']},
+                        'geo': {'H2O': 30, 'CO2': 10, 'H': 10,'C': 20,'Fe': 30,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['geothermal_generator']},
+                        'battery': {'H2O': 0, 'CO2': 0, 'H': 10,'C': 10,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['ener_tank']},
+                        'iceextract': {'H2O': 10, 'CO2': 0, 'H': 10,'C': 10,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_ice_generator']},
+                        'co2extract': {'H2O': 10, 'CO2': 0, 'H': 10,'C': 10,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['co2_generator']},
+                        'fe_mining': {'H2O': 10, 'CO2': 10, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['fe_generator']},
+                        'factory_co2': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['co2_breaker_factory']},
+                        'factory_h2o': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_breaker_factory']},
+                        'factory_poly':{'H2O': 10, 'CO2': 10, 'H': 10,'C': 20,'Fe': 30,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['poly_factory']},
+                        'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_tank']}}
         
 # Resource density
 
