@@ -1,6 +1,6 @@
 from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
-                    INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
-                    TANK_STORAGE, O2_CONSUMPTION)
+                    INITIAL_RESSOURCES_LEVEL_0, O2_CONSUMPTION,
+                    RESSOURCE_GENERATION, TANK_STORAGE)
 
 
 class RessourceManager:
@@ -94,7 +94,7 @@ class RessourceManager:
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
         self.current_ressource['O2'] -= O2_CONSUMPTION
-    
+
     def _check_maximum_overpass(self) -> None:
         for key in self.current_ressource.keys():
             if self.current_ressource[key] > self.maximum_ressource[key]:

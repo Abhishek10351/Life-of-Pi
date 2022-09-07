@@ -8,6 +8,10 @@ SCREEN_TITLE = "Marrrs Explorer"
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 
+# Map size
+MAP_SIZE_X = 10
+MAP_SIZE_Y = 10
+
 # Arcade style dicts
 STYLE_GOLDEN_TANOI = {"font_name": "Dilo World", "font_color": (255, 207, 112), "bg_color": (0, 140, 176),
                       "border_color": (0, 60, 75)}
@@ -98,3 +102,13 @@ BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
 
 O2_CONSUMPTION = 2 / 60
 PARTY_TIME = 600
+
+# Tile build dict
+
+TILE_TYPE_BUILD = {"crater": (),
+                   "fe_crater": "fe_mining",
+                   "geyser": "co2extract",
+                   "ice": ("iceextract", "factory_h2o"),
+                   "land": ("base", "garden", "solar", "tank", "battery"),
+                   "volcano": "geo"
+                   }

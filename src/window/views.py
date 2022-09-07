@@ -1,5 +1,4 @@
 import datetime
-import math
 import random
 import time
 
@@ -11,9 +10,11 @@ from scipy import interpolate
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    LAND, STYLE_GOLDEN_TANOI, VOLCANO, PARTY_TIME)
+                    LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
+                    STYLE_GOLDEN_TANOI, VOLCANO)
 from ressource_manager import RessourceManager
 from sidebar import SideBar
+from utils import Tile, TileList, rect2isometric
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
@@ -104,14 +105,6 @@ class Menu(arcade.View):
         self.manager.disable()
 
 
-def rect2isometric(x, y):
-    """Rotates the axis by 45 degrees and then compresses the y axis by a factor of sqrt(2)."""
-    iso_x_45 = x * (math.sqrt(2) / 2) + y * (math.sqrt(2) / 2)
-    iso_y_45 = -x * (math.sqrt(2) / 2) + y * (math.sqrt(2) / 2)
-    compress_iso_y_45 = -iso_y_45 / math.sqrt(2)
-    return iso_x_45, compress_iso_y_45
-
-
 class Game(arcade.View):
     """
     Main game logic goes here.
@@ -124,7 +117,7 @@ class Game(arcade.View):
         self.main_window = main_window
 
         self.game_scene: arcade.Scene = None
-        self.tile_sprite_list: arcade.SpriteList = None
+        self.tile_sprite_list: TileList = None
 
         self.camera_sprite = None
         self.physics_engine = None
@@ -172,36 +165,32 @@ class Game(arcade.View):
         self.manager.enable()
 
         self.game_scene = arcade.Scene()
-        self.game_scene.add_sprite_list("Tiles")
+        self.tile_sprite_list = TileList()
+
+        self.camera = arcade.Camera(self.main_window.width, self.main_window.height)
+
+        for i in range(-MAP_SIZE_X, MAP_SIZE_X, 1):
+            for j in range(-MAP_SIZE_Y, MAP_SIZE_Y, 1):
+                tile_type = random.choices(["crater", "fe_crater", "geyser",
+                                            "ice", "land", "volcano", ],
+                                           [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
+                filename = tile_type + "_iso.png"
+                tile = Tile(str(ASSET_PATH / "tiles" / filename), tile_type)
+                (tile.isometric_x, tile.isometric_y) = (i, j)
+                (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
+                self.tile_sprite_list.append(tile)
+        print(len(self.tile_sprite_list))
+        # self.game_scene.add_sprite_list("Tiles", self.tile_sprite_list)
         self.game_scene.add_sprite_list("Selected Tile")
 
-        self.camera = arcade.Camera(
-            self.main_window.width, self.main_window.height)
-
-        # for i in range(-775, 800, 50):
-        #    for j in range(-575, 600, 50):
-        for i in range(-10, 10, 1):
-            for j in range(-10, 10, 1):
-                file_name = random.choices(["crater_iso.png", "fe_crater_iso.png", "geyser_iso.png",
-                                            "ice_iso.png", "land_iso.png", "volcano_iso.png", ],
-                                           [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
-                tile = arcade.Sprite(str(ASSET_PATH / "tiles" / file_name))
-                # tile.center_x = i * math.cos(rotation_from_axis) + j * math.sin(rotation_from_axis)
-                # tile.center_y = j * math.cos(rotation_from_axis) - i * math.sin(rotation_from_axis)
-                (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
-
-                self.game_scene.add_sprite("Tiles", tile)
-        self.camera_sprite = arcade.Sprite(
-            str(ASSET_PATH / "utils" / "camera.png"))
+        self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
-        self.camera_sprite = arcade.Sprite(
-            str(ASSET_PATH / "utils" / "camera.png"))
+        self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
         self.camera_sprite.center_x = 400
         self.camera_sprite.center_y = 300
         self.game_scene.add_sprite("Camera", self.camera_sprite)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.camera_sprite, gravity_constant=0)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
 
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
 
@@ -213,10 +202,26 @@ class Game(arcade.View):
     # TODO: Can implement placing something on the map etc.
     #
     # return true/false (can/can't build)
-    @staticmethod
-    def try_to_build(build_type, tile_x, tile_y):
-        print('Trying to build: ', build_type, ' at (', tile_x, ',', tile_y, ')')
-        # return True
+    def try_to_build(self, build_type):
+        build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
+                                   "co2extract": "factory_co2_iso.png",
+                                   "iceextract": "ice_generator_iso.png",
+                                   "factory_h2o": "factory_h2o_iso.png",
+                                   "base": "base_iso.png",
+                                   "garden": "garden_iso.png",
+                                   "solar": "solorgen_iso.png",
+                                   "tank": "tank_iso.png",
+                                   "battery": "battery_iso.png",
+                                   "geo": "geotherm001_iso.png"}
+        if self.selected_tile.check_build(build_type):
+            prev_tile = self.selected_tile
+            self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
+                                      build_type + self.selected_tile.tile_type)
+            self.tile_sprite_list.replace(prev_tile, self.selected_tile)
+            if build_type == "tank":
+                for neighbour_tile in self.tile_sprite_list.get_neighbours(self.selected_tile):
+                    neighbour_tile.tile_type += "poly"
+            return True
         return False
 
     def on_draw(self):
@@ -224,20 +229,21 @@ class Game(arcade.View):
         self.clear()
 
         self.camera.use()
-        self.game_scene.draw()
+        # self.tile_sprite_list.draw()
+        # self.game_scene.draw()
         if self.main_window.mouse_left_is_pressed:
             pass
 
         with self.light_layer:
+            self.tile_sprite_list.draw()
             self.game_scene.draw()
-        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
+        self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
         self.sidebar.draw()  # side bar outside of light layer
 
         if self.console_active:
             self.manager.draw()
-
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
@@ -289,7 +295,6 @@ class Game(arcade.View):
                 self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
                 self.v_box.add(self.debugging_console_tex)
 
-
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
         if key in (arcade.key.UP, arcade.key.W):
@@ -319,15 +324,16 @@ class Game(arcade.View):
             self.main_window.mouse_left_is_pressed = True
             actual_x = x + self.screen_center_x
             actual_y = y + self.screen_center_y
-            rect = arcade.get_sprites_at_point((actual_x, actual_y), self.game_scene.get_sprite_list("Tiles"))
+            rect = arcade.get_sprites_at_point((actual_x, actual_y), self.tile_sprite_list)
             if rect:
                 rect = rect[0]
-                self.selected_tile = arcade.Sprite(str(ASSET_PATH / "sprites_iso" / "select001_iso.png"))
-                self.selected_tile.center_x = rect.center_x
-                self.selected_tile.center_y = rect.center_y
+                self.selected_tile = rect
+                selected_tile = arcade.Sprite(str(ASSET_PATH / "sprites_iso" / "select001_iso.png"))
+                selected_tile.center_x = rect.center_x
+                selected_tile.center_y = rect.center_y
                 self.game_scene.remove_sprite_list_by_name("Selected Tile")
                 self.game_scene.add_sprite_list("Selected Tile")
-                self.game_scene.add_sprite("Selected Tile", self.selected_tile)
+                self.game_scene.add_sprite("Selected Tile", selected_tile)
 
             self.sidebar.DisplayTile([actual_x, actual_y])
             self.sidebar.CheckforBuild([actual_x, actual_y])  # also check if trying to build
@@ -353,13 +359,12 @@ class Game(arcade.View):
         if self.time_delta > PARTY_TIME:
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
-    
+
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
-
 
         self.sidebar.update()
 
@@ -374,14 +379,14 @@ class WinLooseMenu(arcade.View):
     :param main_window: Main window in which the view is shown.
     """
 
-    def __init__(self, main_window: arcade.Window, win_loose = ''):
+    def __init__(self, main_window: arcade.Window, win_loose=''):
         super().__init__(main_window)
         self.main_window = main_window
 
         self.v_box = None
 
         self.manager = None
-        
+
         self.win_loose_message = win_loose
 
     def on_show_view(self) -> None:
@@ -393,14 +398,14 @@ class WinLooseMenu(arcade.View):
         self.v_box = arcade.gui.UIBoxLayout(space_between=30)
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
-        
+
         win_loose_button = arcade.gui.UIFlatButton(
             text=self.win_loose_message, width=200, style=STYLE_GOLDEN_TANOI)
 
         restart_button = arcade.gui.UIFlatButton(
             text="Restart", width=200, style=STYLE_GOLDEN_TANOI)
         restart_button.on_click = self._on_click_restart_button
-        
+
         exit_button = arcade.gui.UIFlatButton(
             text="Exit", width=200, style=STYLE_GOLDEN_TANOI)
         exit_button.on_click = self._on_click_exit_button
@@ -431,4 +436,3 @@ class WinLooseMenu(arcade.View):
 
     def on_hide_view(self):
         self.manager.disable()
-
