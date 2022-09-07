@@ -48,7 +48,7 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'O2': 100,
                               'Fe': 100,
                               'Poly': 0,
-                              'Ener': 0,
+                              'Ener': 100,
                               'Money': 0,
                               'Food' : 100,
                               'Crew' : 1}
