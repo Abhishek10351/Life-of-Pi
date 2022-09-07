@@ -184,6 +184,17 @@ class Game(arcade.View):
         
         self.sidebar.setup_sidebar()
     
+    # try_to_build: function gets called from sidebar when player 
+    # tries to build something/somewhere
+    #
+    # Can implement placing something on the map etc.
+    #
+    # return true/false (can/can't build)
+    def try_to_build(self, type, tile_x, tile_y):
+        print('Trying to build: ',type,' at (',tile_x,',',tile_y,')')
+        #return True
+        return False
+    
     def on_draw(self):
         """Render the screen."""
         self.clear()
@@ -220,6 +231,8 @@ class Game(arcade.View):
             self.sidebar.switch_build()
         elif key == arcade.key.R: # for now, R button used to toggle resources view on/off
             self.sidebar.switch_resview()
+        elif key == arcade.key.C: # for now, C button used to cancel build selection in sidebar
+            self.sidebar.CheckforBuild(None) # Tell sidebar to cancel potential build
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
@@ -260,6 +273,9 @@ class Game(arcade.View):
                 self.game_scene.remove_sprite_list_by_name("Selected Tile")
                 self.game_scene.add_sprite_list("Selected Tile")
                 self.game_scene.add_sprite("Selected Tile", self.selected_tile)
+            
+            self.sidebar.DisplayTile([actual_x,actual_y])
+            self.sidebar.CheckforBuild([actual_x,actual_y]) # also check if trying to build
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
