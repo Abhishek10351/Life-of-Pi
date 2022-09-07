@@ -11,7 +11,7 @@ from scipy import interpolate
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    LAND, STYLE_GOLDEN_TANOI, VOLCANO)
+                    LAND, STYLE_GOLDEN_TANOI, VOLCANO, PARTY_TIME)
 from ressource_manager import RessourceManager
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -315,8 +315,84 @@ class Game(arcade.View):
         camera_centered = self.screen_center_x, self.screen_center_y
         self.camera.move_to(camera_centered)
 
+    def check_win_loose(self):
+        if self.ressource_manager.current_ressource['O2'] < 0:
+            winloose = WinLooseMenu(self.main_window, 'Game Over !')
+            self.main_window.show_view(winloose)
+        if self.time_delta > PARTY_TIME:
+            winloose = WinLooseMenu(self.main_window, 'You Win !')
+            self.main_window.show_view(winloose)
+    
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
+        self.ressource_manager.update()
+        self.check_win_loose()
+
+
+class WinLooseMenu(arcade.View):
+    """
+    Menu view.
+
+    :param main_window: Main window in which the view is shown.
+    """
+
+    def __init__(self, main_window: arcade.Window, win_loose = ''):
+        super().__init__(main_window)
+        self.main_window = main_window
+
+        self.v_box = None
+
+        self.manager = None
+        
+        self.win_loose_message = win_loose
+
+    def on_show_view(self) -> None:
+        """Called when the current is switched to this view."""
+        self.setup()
+
+    def setup(self) -> None:
+        """Set up the game variables. Call to re-start the game."""
+        self.v_box = arcade.gui.UIBoxLayout(space_between=30)
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        
+        win_loose_button = arcade.gui.UIFlatButton(
+            text=self.win_loose_message, width=200, style=STYLE_GOLDEN_TANOI)
+
+        restart_button = arcade.gui.UIFlatButton(
+            text="Restart", width=200, style=STYLE_GOLDEN_TANOI)
+        restart_button.on_click = self._on_click_restart_button
+        
+        exit_button = arcade.gui.UIFlatButton(
+            text="Exit", width=200, style=STYLE_GOLDEN_TANOI)
+        exit_button.on_click = self._on_click_exit_button
+
+        self.v_box.add(win_loose_button)
+        self.v_box.add(restart_button)
+        self.v_box.add(exit_button)
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                child=self.v_box
+            )
+        )
+
+    def on_draw(self) -> None:
+        """Called when this view should draw."""
+        self.clear()
+
+        self.manager.draw()
+
+    def _on_click_restart_button(self, _: arcade.gui.UIOnClickEvent) -> None:
+        game = Game(self.main_window)
+        self.main_window.show_view(game)
+
+    def _on_click_exit_button(self, _: arcade.gui.UIOnClickEvent) -> None:
+        self.main_window.close()
+        arcade.exit()
+
+    def on_hide_view(self):
+        self.manager.disable()
