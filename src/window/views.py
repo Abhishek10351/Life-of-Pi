@@ -219,6 +219,7 @@ class Game(arcade.View):
                                       build_type + self.selected_tile.tile_type)
             self.tile_sprite_list.replace(prev_tile, self.selected_tile)
             if build_type == "tank":
+                # makes the neighbouring tile eligible to build a polymer factory.
                 for neighbour_tile in self.tile_sprite_list.get_neighbours(self.selected_tile):
                     neighbour_tile.tile_type += "poly"
             return True
