@@ -4,7 +4,7 @@ from typing import List
 
 import arcade
 
-from config import TILE_TYPE_BUILD, MAP_SIZE_X, MAP_SIZE_Y
+from config import TILE_TYPE_BUILD
 
 
 def rect2isometric(x, y):
@@ -32,7 +32,7 @@ class Tile(arcade.Sprite):
         self.isometric_x = 0
         self.isometric_y = 0
 
-    def check_build(self, build_type: str, tile_sprite_list, lst_neighbours):
+    def check_build(self, build_type: str, lst_neighbours):
         if build_type in TILE_TYPE_BUILD[self.tile_type]:
             return True
         elif build_type == "factory_poly":

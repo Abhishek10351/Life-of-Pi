@@ -214,7 +214,7 @@ class Game(arcade.View):
                                    "battery": "battery_iso.png",
                                    "geo": "geotherm001_iso.png",
                                    "factory_poly": "factory_poly_iso.png"}
-        if self.selected_tile.check_build(build_type, self.tile_sprite_list, self.tile_sprite_list.get_neighbours(self.selected_tile)):
+        if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)):
             prev_tile = self.selected_tile
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
                                       build_type)
