@@ -218,6 +218,8 @@ class Game(arcade.View):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
         elif key == arcade.key.B: # for now, B button used to toggle build menu on/off
             self.sidebar.switch_build()
+        elif key == arcade.key.R: # for now, R button used to toggle resources view on/off
+            self.sidebar.switch_resview()
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
