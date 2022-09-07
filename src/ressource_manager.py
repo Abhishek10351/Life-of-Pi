@@ -52,7 +52,7 @@ class RessourceManager:
                                   'Money': self.initial_money,
                                   'Food': self.initial_food,
                                   'Total_crew': self.initial_crew,
-                                  'Available_crew' : self.initial_crew}
+                                  'Crew' : self.initial_crew}
 
         self.maximum_ressource = {'H2O': self.initial_maximum_h2o,
                                   'CO2': self.initial_maximum_co2,
@@ -124,9 +124,9 @@ class RessourceManager:
         #You have a total crew of 1 (yourself) when you don't have bases
         self.maximum_ressource['Crew'] =  1 + (CREW_PER_BASES * self.bases)
         self.current_ressource['Total_crew'] = 1 + (CREW_PER_BASES * self.bases)
-        self.current_ressource['Available_crew'] = self.current_ressource['Total_crew']
+        self.current_ressource['Crew'] = self.current_ressource['Total_crew']
         for key, item in CREW_MEMBER_TO_OPERATE.items():
-            self.current_ressource['Available_crew'] -= getattr(self, key) * item
+            self.current_ressource['Crew'] -= getattr(self, key) * item
     
     def _check_maximum_overpass(self) -> None:
         for key in RESSOURCES_LIST:
