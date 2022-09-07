@@ -1,4 +1,5 @@
 from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
+
                     INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
                     TANK_STORAGE, O2_CONSUMPTION, FOOD_CONSUMPTION_PER_MEMBER_CREW,
                     CREW_PER_BASES, CREW_MEMBER_TO_OPERATE, RESSOURCES_LIST, ENER_PER_BUILDING)
@@ -113,7 +114,7 @@ class RessourceManager:
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
         self.current_ressource['O2'] -= O2_CONSUMPTION
-    
+
     def update_food(self) -> None:
         """Function that simulate the food production and consumption"""
         self.current_ressource['Food'] -= FOOD_CONSUMPTION_PER_MEMBER_CREW * self.current_ressource['Total_crew']

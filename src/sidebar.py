@@ -1,31 +1,14 @@
 # build_sidebar.py: controls and display for sidebar for building etc.
 
-from math import sqrt
-
 import arcade
 import arcade.gui
 
 from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH
+from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
 RES_TEXT_HEIGHT = 180
 BUILDTEXTHEIGHT = 15
-
-
-def rect2isometric(x, y):
-    """Rotates the axis by 45 degrees and then compresses the y axis by a factor of sqrt(2)."""
-    iso_x_45 = x * (sqrt(2) / 2) + y * (sqrt(2) / 2)
-    iso_y_45 = -x * (sqrt(2) / 2) + y * (sqrt(2) / 2)
-    compress_iso_y_45 = -iso_y_45 / sqrt(2)
-    return iso_x_45, compress_iso_y_45
-
-
-def isometric2rect(iso_x_45, compress_iso_y_45):
-    """Un-compresses the y axis by a factor of sqrt(2) and then rotates the axis by 45 degrees"""
-    iso_y_45 = -compress_iso_y_45 * sqrt(2)
-    x = iso_x_45 * (sqrt(2) / 2) - iso_y_45 * (sqrt(2) / 2)
-    y = iso_x_45 * (sqrt(2) / 2) + iso_y_45 * (sqrt(2) / 2)
-    return x, y
 
 
 # SideBar: controls things like the build menu
@@ -282,7 +265,7 @@ class SideBar:
         tile_x = int(x / 80)
         tile_y = int(y / 80)
         print('building at:', tile_x, tile_y, self.trybuild)
-        result = self.parent.try_to_build(self.trybuild, tile_x, tile_y)
+        result = self.parent.try_to_build(self.trybuild)
         if result:
             self.build_result = True
             self.trybuild = None
