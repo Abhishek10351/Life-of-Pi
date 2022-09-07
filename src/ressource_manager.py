@@ -1,6 +1,7 @@
 from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
                     INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
-                    TANK_STORAGE, O2_CONSUMPTION, FOOD_CONSUMPTION_PER_MEMBER_CREW)
+                    TANK_STORAGE, O2_CONSUMPTION, FOOD_CONSUMPTION_PER_MEMBER_CREW,
+                    CREW_PER_BASES, CREW_MEMBER_TO_OPERATE, RESSOURCES_LIST, ENER_PER_BUILDING)
 
 
 class RessourceManager:
@@ -50,7 +51,8 @@ class RessourceManager:
                                   'Ener': self.initial_energy,
                                   'Money': self.initial_money,
                                   'Food': self.initial_food,
-                                  'Crew': self.initial_crew}
+                                  'Total_crew': self.initial_crew,
+                                  'Available_crew' : self.initial_crew}
 
         self.maximum_ressource = {'H2O': self.initial_maximum_h2o,
                                   'CO2': self.initial_maximum_co2,
@@ -86,18 +88,23 @@ class RessourceManager:
         self.ener_tank = 0
         self.food_tank = 0
         self.bases = 0
+        
+        #if energy comes down to 0, will be turn to False and factories wont work anymore until energy comes back to 0
+        self.enable_factory = True
 
     def update(self) -> None:
         """
         Update the amount of stored ressource when called
         """
-        self.update_h2o()
-        self.update_co2()
-        self.update_fe()
-        self.update_polymer()
+        if self.enable_factory:
+            self.update_h2o()
+            self.update_co2()
+            self.update_fe()
+            self.update_polymer()
         self.update_energy()
         self.update_money()
         self.update_food()
+        self.update_crew()
         self.o2_consumption()
         self.update_storage_capacity()
 
@@ -109,11 +116,20 @@ class RessourceManager:
     
     def update_food(self) -> None:
         """Function that simulate the food production and consumption"""
-        self.current_ressource['Food'] -= FOOD_CONSUMPTION_PER_MEMBER_CREW * self.current_ressource['Crew']
-        self.current_ressource['Food'] += self.garden * RESSOURCE_GENERATION['garden']
+        self.current_ressource['Food'] -= FOOD_CONSUMPTION_PER_MEMBER_CREW * self.current_ressource['Total_crew']
+        if self.enable_factory:
+            self.current_ressource['Food'] += self.garden * RESSOURCE_GENERATION['garden']
+        
+    def update_crew(self) -> None:
+        #You have a total crew of 1 (yourself) when you don't have bases
+        self.maximum_ressource['Crew'] =  1 + (CREW_PER_BASES * self.bases)
+        self.current_ressource['Total_crew'] = 1 + (CREW_PER_BASES * self.bases)
+        self.current_ressource['Available_crew'] = self.current_ressource['Total_crew']
+        for key, item in CREW_MEMBER_TO_OPERATE.items():
+            self.current_ressource['Available_crew'] -= getattr(self, key) * item
     
     def _check_maximum_overpass(self) -> None:
-        for key in self.current_ressource.keys():
+        for key in RESSOURCES_LIST:
             if self.current_ressource[key] > self.maximum_ressource[key]:
                 self.current_ressource[key] = self.maximum_ressource[key]
 
@@ -187,8 +203,15 @@ class RessourceManager:
         """
         Update Energy ressource
         """
+
         self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel \
                                           + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
+        if self.enable_factory:
+            for key, item in ENER_PER_BUILDING.items():
+                self.current_ressource['Ener'] -= getattr(self, key) * item
+        if self.current_ressource['Ener'] < 0:
+            self.enable_factory = False
+            self.current_ressource['Ener'] = 0
 
     def update_money(self) -> None:
         """
