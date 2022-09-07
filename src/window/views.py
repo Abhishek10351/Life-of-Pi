@@ -11,7 +11,7 @@ from scipy import interpolate
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    LAND, STYLE_GOLDEN_TANOI, VOLCANO)
+                    LAND, STYLE_GOLDEN_TANOI, VOLCANO, PARTY_TIME)
 from ressource_manager import RessourceManager
 from sidebar import SideBar
 
@@ -132,6 +132,7 @@ class Game(arcade.View):
 
         self.light_layer = None
         self.time = time.time()
+        self.time_delta = 0
 
         self.ressource_manager = RessourceManager()
 
@@ -141,12 +142,35 @@ class Game(arcade.View):
 
         self.sidebar = SideBar(self)
 
+        self.manager = None
+        self.v_box: arcade.gui.UIBoxLayout = None
+        self.console_active = False
+
+        self.debugging_console = None
+        self.debugging_console_tex_inp = None
+        self.debugging_console_tex_out = None
+        self.debugging_console_tex = None
+
     def on_show_view(self):
         """Called when the current is switched to this view."""
         self.setup()
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.manager = arcade.gui.UIManager()
+        self.v_box = arcade.gui.UIBoxLayout()
+        self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+        tex = arcade.texture.Texture("tex creator")
+        self.debugging_console_tex_inp = tex.create_filled(color=(100, 0, 0, 150), name="debug console in",
+                                                           size=(self.main_window.width, 25))
+        self.debugging_console_tex_out = tex.create_filled(color=(0, 100, 0, 150), name="debug console out",
+                                                           size=(self.main_window.width, 25))
+        self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+        self.v_box.add(self.debugging_console_tex)
+
+        self.manager.add(arcade.gui.UIAnchorWidget(child=self.v_box, anchor_y="bottom"))
+        self.manager.enable()
+
         self.game_scene = arcade.Scene()
         self.game_scene.add_sprite_list("Tiles")
         self.game_scene.add_sprite_list("Selected Tile")
@@ -208,12 +232,17 @@ class Game(arcade.View):
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
+
         self.sidebar.draw()  # side bar outside of light layer
+
+        if self.console_active:
+            self.manager.draw()
+
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
-        time_delta = datetime.timedelta(seconds=time.time() - self.time).total_seconds()
-        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(time_delta % DAY_TOTAL_TIME)
+        self.time_delta = datetime.timedelta(seconds=time.time() - self.time).total_seconds()
+        brightness = interpolate.interp1d(BRIGHTNESS_TIME, BRIGHTNESS_VALUE)(self.time_delta % DAY_TOTAL_TIME)
         return (brightness * 255,) * 3
 
     def on_key_press(self, key, _):
@@ -233,6 +262,33 @@ class Game(arcade.View):
             self.sidebar.switch_resview()
         elif key == arcade.key.C:  # for now, C button used to cancel build selection in sidebar
             self.sidebar.CheckforBuild(None)  # Tell sidebar to cancel potential build
+        elif key == arcade.key.F4:
+            self.manager.enable()
+            if self.console_active:
+                self.manager.disable()
+            self.console_active = not self.console_active
+        elif key == arcade.key.ENTER:
+            if not self.console_active:
+                return
+            if self.debugging_console.text[1:] in ('clear', 'cls'):
+                self.v_box.clear()
+                self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+                self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(self.debugging_console_tex)
+            else:
+                out = arcade.gui.UILabel(text=str(eval(f"{self.debugging_console.text[1:]}")),
+                                         width=self.main_window.width, height=25, text_color=(255, 255, 255))
+                out_tex = out.with_background(self.debugging_console_tex_out)
+                self.v_box.remove(self.debugging_console_tex)
+                prev = arcade.gui.UILabel(text=self.debugging_console.text,
+                                          width=self.main_window.width, height=25, text_color=(0, 0, 0))
+                prev_tex = prev.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(prev_tex)
+                self.v_box.add(out_tex)
+                self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
+                self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
+                self.v_box.add(self.debugging_console_tex)
+
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
@@ -263,7 +319,6 @@ class Game(arcade.View):
             self.main_window.mouse_left_is_pressed = True
             actual_x = x + self.screen_center_x
             actual_y = y + self.screen_center_y
-            print(self.camera_sprite.center_x, self.camera_sprite.center_y)
             rect = arcade.get_sprites_at_point((actual_x, actual_y), self.game_scene.get_sprite_list("Tiles"))
             if rect:
                 rect = rect[0]
@@ -291,10 +346,89 @@ class Game(arcade.View):
         camera_centered = self.screen_center_x, self.screen_center_y
         self.camera.move_to(camera_centered)
 
+    def check_win_loose(self):
+        if self.ressource_manager.current_ressource['O2'] < 0:
+            winloose = WinLooseMenu(self.main_window, 'Game Over !')
+            self.main_window.show_view(winloose)
+        if self.time_delta > PARTY_TIME:
+            winloose = WinLooseMenu(self.main_window, 'You Win !')
+            self.main_window.show_view(winloose)
+    
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
 
+
         self.sidebar.update()
+
+        self.ressource_manager.update()
+        self.check_win_loose()
+
+
+class WinLooseMenu(arcade.View):
+    """
+    Menu view.
+
+    :param main_window: Main window in which the view is shown.
+    """
+
+    def __init__(self, main_window: arcade.Window, win_loose = ''):
+        super().__init__(main_window)
+        self.main_window = main_window
+
+        self.v_box = None
+
+        self.manager = None
+        
+        self.win_loose_message = win_loose
+
+    def on_show_view(self) -> None:
+        """Called when the current is switched to this view."""
+        self.setup()
+
+    def setup(self) -> None:
+        """Set up the game variables. Call to re-start the game."""
+        self.v_box = arcade.gui.UIBoxLayout(space_between=30)
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        
+        win_loose_button = arcade.gui.UIFlatButton(
+            text=self.win_loose_message, width=200, style=STYLE_GOLDEN_TANOI)
+
+        restart_button = arcade.gui.UIFlatButton(
+            text="Restart", width=200, style=STYLE_GOLDEN_TANOI)
+        restart_button.on_click = self._on_click_restart_button
+        
+        exit_button = arcade.gui.UIFlatButton(
+            text="Exit", width=200, style=STYLE_GOLDEN_TANOI)
+        exit_button.on_click = self._on_click_exit_button
+
+        self.v_box.add(win_loose_button)
+        self.v_box.add(restart_button)
+        self.v_box.add(exit_button)
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                child=self.v_box
+            )
+        )
+
+    def on_draw(self) -> None:
+        """Called when this view should draw."""
+        self.clear()
+
+        self.manager.draw()
+
+    def _on_click_restart_button(self, _: arcade.gui.UIOnClickEvent) -> None:
+        game = Game(self.main_window)
+        self.main_window.show_view(game)
+
+    def _on_click_exit_button(self, _: arcade.gui.UIOnClickEvent) -> None:
+        self.main_window.close()
+        arcade.exit()
+
+    def on_hide_view(self):
+        self.manager.disable()
+
