@@ -5,7 +5,7 @@ from math import sqrt
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH
+from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH
 
 DESCR_TEXT_HEIGHT = 240
 RES_TEXT_HEIGHT = 180
@@ -364,6 +364,10 @@ class SideBar:
             arcade.draw_text(line, 100, h, text_col, font_size=12,
                              anchor_x="left", anchor_y="center")
 
+    def draw_time_left(self):
+        arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
+                         (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
+    
     # used to display some information about the current tile selected by
     # player from Main View
     def DisplayTile(self, coords):
@@ -377,5 +381,6 @@ class SideBar:
         self.sb_manager.draw()
         self.draw_build_text()
         self.draw_res_disp()
+        self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()

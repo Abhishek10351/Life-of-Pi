@@ -47,7 +47,9 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'Fe': 100,
                               'Poly': 0,
                               'Ener': 0,
-                              'Money': 0}
+                              'Money': 0,
+                              'Food' : 100,
+                              'Crew' : 1}
 
 # Initial storage without improvement
 INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
@@ -58,7 +60,9 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
                                       'Fe': 1000,
                                       'Poly': 1000,
                                       'Ener': 1000,
-                                      'Money': 100000}
+                                      'Money': 100000,
+                                      'Food': 1000,
+                                      'Crew':5}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_ice_generator': 1 / 60,
@@ -69,7 +73,8 @@ RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_breaker_factory': 1 / 60,
                         'poly_factory': 0.5 / 60,
                         'solar_pannel': 2 / 60,
-                        'geothermal_generator': 5 / 60}
+                        'geothermal_generator': 5 / 60,
+                        'garden': 2 / 60}
 
 TANK_STORAGE = {'h2o_tank': 0,
                 'co2_tank': 0,
@@ -78,7 +83,9 @@ TANK_STORAGE = {'h2o_tank': 0,
                 'o2_tank': 0,
                 'fe_tank': 0,
                 'poly_tank': 0,
-                'ener_tank': 0}
+                'ener_tank': 0,
+                'food_tank': 0,
+                'bases' : 0}
 
 # Resource density
 
@@ -97,4 +104,5 @@ BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME /
 BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
 
 O2_CONSUMPTION = 2 / 60
+FOOD_CONSUMPTION_PER_MEMBER_CREW = 2 / 60
 PARTY_TIME = 600

@@ -1,6 +1,6 @@
 from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
                     INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
-                    TANK_STORAGE, O2_CONSUMPTION)
+                    TANK_STORAGE, O2_CONSUMPTION, FOOD_CONSUMPTION_PER_MEMBER_CREW)
 
 
 class RessourceManager:
@@ -25,6 +25,8 @@ class RessourceManager:
         self.initial_poly = INITIAL_RESSOURCES['Poly']
         self.initial_energy = INITIAL_RESSOURCES['Ener']
         self.initial_money = INITIAL_RESSOURCES['Money']
+        self.initial_food = INITIAL_RESSOURCES['Food']
+        self.initial_crew = INITIAL_RESSOURCES['Crew']
 
         self.initial_maximum_h2o = INITIAL_MAXIMUM_RESSOURCES['H2O']
         self.initial_maximum_co2 = INITIAL_MAXIMUM_RESSOURCES['CO2']
@@ -35,6 +37,8 @@ class RessourceManager:
         self.initial_maximum_poly = INITIAL_MAXIMUM_RESSOURCES['Poly']
         self.initial_maximum_energy = INITIAL_MAXIMUM_RESSOURCES['Ener']
         self.initial_maximum_money = INITIAL_MAXIMUM_RESSOURCES['Money']
+        self.initial_maximum_food = INITIAL_MAXIMUM_RESSOURCES['Money']
+        self.initial_maximum_crew = INITIAL_MAXIMUM_RESSOURCES['Money']
 
         self.current_ressource = {'H2O': self.initial_h2o,
                                   'CO2': self.initial_co2,
@@ -44,7 +48,9 @@ class RessourceManager:
                                   'Fe': self.initial_fe,
                                   'Poly': self.initial_poly,
                                   'Ener': self.initial_energy,
-                                  'Money': self.initial_money}
+                                  'Money': self.initial_money,
+                                  'Food': self.initial_food,
+                                  'Crew': self.initial_crew}
 
         self.maximum_ressource = {'H2O': self.initial_maximum_h2o,
                                   'CO2': self.initial_maximum_co2,
@@ -54,7 +60,9 @@ class RessourceManager:
                                   'Fe': self.initial_maximum_fe,
                                   'Poly': self.initial_maximum_poly,
                                   'Ener': self.initial_maximum_energy,
-                                  'Money': self.initial_maximum_money}
+                                  'Money': self.initial_maximum_money,
+                                  'Food': self.initial_maximum_food,
+                                  'Crew': self.initial_maximum_crew}
 
         self.h2o_liquid_generator = 0
         self.h2o_ice_generator = 0
@@ -66,6 +74,7 @@ class RessourceManager:
         self.poly_factory = 0
         self.solar_pannel = 0
         self.geothermal_generator = 0
+        self.garden = 0
 
         self.h2o_tank = 0
         self.co2_tank = 0
@@ -75,6 +84,8 @@ class RessourceManager:
         self.fe_tank = 0
         self.poly_tank = 0
         self.ener_tank = 0
+        self.food_tank = 0
+        self.bases = 0
 
     def update(self) -> None:
         """
@@ -86,6 +97,7 @@ class RessourceManager:
         self.update_polymer()
         self.update_energy()
         self.update_money()
+        self.update_food()
         self.o2_consumption()
         self.update_storage_capacity()
 
@@ -94,6 +106,11 @@ class RessourceManager:
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
         self.current_ressource['O2'] -= O2_CONSUMPTION
+    
+    def update_food(self) -> None:
+        """Function that simulate the food production and consumption"""
+        self.current_ressource['Food'] -= FOOD_CONSUMPTION_PER_MEMBER_CREW * self.current_ressource['Crew']
+        self.current_ressource['Food'] += self.garden * RESSOURCE_GENERATION['garden']
     
     def _check_maximum_overpass(self) -> None:
         for key in self.current_ressource.keys():
