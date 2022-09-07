@@ -41,25 +41,25 @@ class SideBar(object):
         
         # Button data
         buttons = [
-            ['base',20,20,'box001.png','box002.png'],
-            ['garden',80,20,'box001.png','box002.png'],
-            ['solar',20,80,'box001.png','box002.png'],
-            ['geo',80,80,'box001.png','box002.png'],
-            ['battery',140,80,'box001.png','box002.png'],
-            ['iceextract',20,140,'box001.png','box002.png'],
-            ['co2extract',80,140,'box001.png','box002.png'],
-            ['fe_mining',140,140,'box001.png','box002.png'],
-            ['factory_co2',20,200,'box001.png','box002.png'],
-            ['factory_h2o',80,200,'box001.png','box002.png'],
-            ['factory_poly',140,200,'box001.png','box002.png'],
-            ['tank',20,260,'box001.png','box002.png'],
+            ['base',20,20,'base_off.png','base_on.png'],
+            ['garden',80,20,'garden_off.png','garden_on.png'],
+            ['solar',20,80,'solar_off.png','solar_on.png'],
+            ['geo',80,80,'geo_off.png','geo_on.png'],
+            ['battery',140,80,'box002.png','box001.png'],
+            ['iceextract',20,140,'extractor_off.png','extractor_on.png'],
+            ['co2extract',80,140,'extractor_off.png','extractor_on.png'],
+            ['fe_mining',140,140,'mining_off.png','mining_on.png'],
+            ['factory_co2',20,200,'factory_co2_off.png','factory_co2_on.png'],
+            ['factory_h2o',80,200,'factory_h2o_off.png','factory_h2o_on.png'],
+            ['factory_poly',140,200,'factory_poly_off.png','factory_poly_on.png'],
+            ['tank',20,260,'tank_off.png','tank_on.png'],
         ]
         
         # Create the buttons
         self.buildbuttons = {}
         for (i,b) in enumerate(buttons):
-            texture = arcade.load_texture(str(ASSET_PATH / "sprites" / b[3]))
-            texture_hover = arcade.load_texture(str(ASSET_PATH / "sprites" / b[4]))
+            texture = arcade.load_texture(str(ASSET_PATH / "sidebar" / b[3]))
+            texture_hover = arcade.load_texture(str(ASSET_PATH / "sidebar" / b[4]))
             button = arcade.gui.UITextureButton(texture=texture, texture_hovered=texture_hover)
             button.on_click = self._on_click_build_button
             self.buildbuttons[b[0]] = button
