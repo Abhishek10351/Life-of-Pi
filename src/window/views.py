@@ -13,7 +13,6 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
                     LAND, STYLE_GOLDEN_TANOI, VOLCANO)
 from ressource_manager import RessourceManager
-
 from sidebar import SideBar
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -139,7 +138,7 @@ class Game(arcade.View):
         self.selected_tile = None
         self.screen_center_x = 0
         self.screen_center_y = 0
-        
+
         self.sidebar = SideBar(self)
 
     def on_show_view(self):
@@ -181,20 +180,21 @@ class Game(arcade.View):
             self.camera_sprite, gravity_constant=0)
 
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
-        
+
         self.sidebar.setup_sidebar()
-    
-    # try_to_build: function gets called from sidebar when player 
+
+    # try_to_build: function gets called from sidebar when player
     # tries to build something/somewhere
     #
-    # Can implement placing something on the map etc.
+    # TODO: Can implement placing something on the map etc.
     #
     # return true/false (can/can't build)
-    def try_to_build(self, type, tile_x, tile_y):
-        print('Trying to build: ',type,' at (',tile_x,',',tile_y,')')
-        #return True
+    @staticmethod
+    def try_to_build(build_type, tile_x, tile_y):
+        print('Trying to build: ', build_type, ' at (', tile_x, ',', tile_y, ')')
+        # return True
         return False
-    
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
@@ -207,8 +207,8 @@ class Game(arcade.View):
         with self.light_layer:
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
-        
-        self.sidebar.draw() # side bar outside of light layer
+
+        self.sidebar.draw()  # side bar outside of light layer
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
@@ -227,12 +227,12 @@ class Game(arcade.View):
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
-        elif key == arcade.key.B: # for now, B button used to toggle build menu on/off
+        elif key == arcade.key.B:  # for now, B button used to toggle build menu on/off
             self.sidebar.switch_build()
-        elif key == arcade.key.R: # for now, R button used to toggle resources view on/off
+        elif key == arcade.key.R:  # for now, R button used to toggle resources view on/off
             self.sidebar.switch_resview()
-        elif key == arcade.key.C: # for now, C button used to cancel build selection in sidebar
-            self.sidebar.CheckforBuild(None) # Tell sidebar to cancel potential build
+        elif key == arcade.key.C:  # for now, C button used to cancel build selection in sidebar
+            self.sidebar.CheckforBuild(None)  # Tell sidebar to cancel potential build
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
@@ -273,9 +273,9 @@ class Game(arcade.View):
                 self.game_scene.remove_sprite_list_by_name("Selected Tile")
                 self.game_scene.add_sprite_list("Selected Tile")
                 self.game_scene.add_sprite("Selected Tile", self.selected_tile)
-            
-            self.sidebar.DisplayTile([actual_x,actual_y])
-            self.sidebar.CheckforBuild([actual_x,actual_y]) # also check if trying to build
+
+            self.sidebar.DisplayTile([actual_x, actual_y])
+            self.sidebar.CheckforBuild([actual_x, actual_y])  # also check if trying to build
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -284,9 +284,9 @@ class Game(arcade.View):
     def center_camera_to_camera(self):
         """Centers camera to the camera sprite."""
         self.screen_center_x = self.camera_sprite.center_x - \
-                          (self.camera.viewport_width / 2)
+                               (self.camera.viewport_width / 2)
         self.screen_center_y = self.camera_sprite.center_y - \
-                          (self.camera.viewport_height / 2)
+                               (self.camera.viewport_height / 2)
 
         camera_centered = self.screen_center_x, self.screen_center_y
         self.camera.move_to(camera_centered)
@@ -296,5 +296,5 @@ class Game(arcade.View):
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
-        
+
         self.sidebar.update()
