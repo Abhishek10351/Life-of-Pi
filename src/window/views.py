@@ -197,7 +197,7 @@ class Game(arcade.View):
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
         
-        self.sidebar.sb_manager.draw() # side bar outside of light layer
+        self.sidebar.draw() # side bar outside of light layer
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
