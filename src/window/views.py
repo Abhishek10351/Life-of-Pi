@@ -347,14 +347,15 @@ class Game(arcade.View):
         self.camera.move_to(camera_centered)
 
     def check_win_loose(self):
-        if self.ressource_manager.current_ressource['O2'] < 0:
+        if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
+            print(self.ressource_manager.current_ressource)
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
             self.main_window.show_view(winloose)
         if self.time_delta > PARTY_TIME:
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
     
-    def on_update(self, delta_time):
+    def on_update(self):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
