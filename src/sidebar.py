@@ -183,7 +183,8 @@ class SideBar:
             anchor_x="left",
             anchor_y="bottom",
             align_x=15,
-            align_y=15,            child=self.res_label1)
+            align_y=15,
+            child=self.res_label1)
         self.res_label1.anchor = anchor
         self.sb_manager.add(anchor)
 
