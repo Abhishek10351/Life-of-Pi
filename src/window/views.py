@@ -355,7 +355,7 @@ class Game(arcade.View):
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
     
-    def on_update(self, delta_time):
+    def on_update(self):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
