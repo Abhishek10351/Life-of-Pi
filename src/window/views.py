@@ -209,19 +209,16 @@ class Game(arcade.View):
                                    "factory_h2o": "factory_h2o_iso.png",
                                    "base": "base_iso.png",
                                    "garden": "garden_iso.png",
-                                   "solar": "solorgen_iso.png",
+                                   "solar": "solargen_iso.png",
                                    "tank": "tank_iso.png",
                                    "battery": "battery_iso.png",
-                                   "geo": "geotherm001_iso.png"}
-        if self.selected_tile.check_build(build_type):
+                                   "geo": "geotherm001_iso.png",
+                                   "factory_poly": "factory_poly_iso.png"}
+        if self.selected_tile.check_build(build_type, self.tile_sprite_list, self.tile_sprite_list.get_neighbours(self.selected_tile)):
             prev_tile = self.selected_tile
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
-                                      build_type + self.selected_tile.tile_type)
+                                      build_type)
             self.tile_sprite_list.replace(prev_tile, self.selected_tile)
-            if build_type == "tank":
-                # makes the neighbouring tile eligible to build a polymer factory.
-                for neighbour_tile in self.tile_sprite_list.get_neighbours(self.selected_tile):
-                    neighbour_tile.tile_type += "poly"
             return True
         return False
 
