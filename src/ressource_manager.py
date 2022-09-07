@@ -38,8 +38,8 @@ class RessourceManager:
         self.initial_maximum_poly = INITIAL_MAXIMUM_RESSOURCES['Poly']
         self.initial_maximum_energy = INITIAL_MAXIMUM_RESSOURCES['Ener']
         self.initial_maximum_money = INITIAL_MAXIMUM_RESSOURCES['Money']
-        self.initial_maximum_food = INITIAL_MAXIMUM_RESSOURCES['Money']
-        self.initial_maximum_crew = INITIAL_MAXIMUM_RESSOURCES['Money']
+        self.initial_maximum_food = INITIAL_MAXIMUM_RESSOURCES['Food']
+        self.initial_maximum_crew = INITIAL_MAXIMUM_RESSOURCES['Crew']
 
         self.current_ressource = {'H2O': self.initial_h2o,
                                   'CO2': self.initial_co2,
