@@ -13,6 +13,7 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
                     LAND, STYLE_GOLDEN_TANOI, VOLCANO, PARTY_TIME)
 from ressource_manager import RessourceManager
+from sidebar import SideBar
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
@@ -139,6 +140,8 @@ class Game(arcade.View):
         self.screen_center_x = 0
         self.screen_center_y = 0
 
+        self.sidebar = SideBar(self)
+
         self.manager = None
         self.v_box: arcade.gui.UIBoxLayout = None
         self.console_active = False
@@ -202,6 +205,20 @@ class Game(arcade.View):
 
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
 
+        self.sidebar.setup_sidebar()
+
+    # try_to_build: function gets called from sidebar when player
+    # tries to build something/somewhere
+    #
+    # TODO: Can implement placing something on the map etc.
+    #
+    # return true/false (can/can't build)
+    @staticmethod
+    def try_to_build(build_type, tile_x, tile_y):
+        print('Trying to build: ', build_type, ' at (', tile_x, ',', tile_y, ')')
+        # return True
+        return False
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
@@ -215,8 +232,12 @@ class Game(arcade.View):
             self.game_scene.draw()
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
 
+
+        self.sidebar.draw()  # side bar outside of light layer
+
         if self.console_active:
             self.manager.draw()
+
 
     def get_daytime_brightness(self):
         """Generate the brightness value to render of the screen"""
@@ -235,6 +256,12 @@ class Game(arcade.View):
             self.camera_sprite.change_x = -CAMERA_MOVEMENT_SPEED
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.camera_sprite.change_x = CAMERA_MOVEMENT_SPEED
+        elif key == arcade.key.B:  # for now, B button used to toggle build menu on/off
+            self.sidebar.switch_build()
+        elif key == arcade.key.R:  # for now, R button used to toggle resources view on/off
+            self.sidebar.switch_resview()
+        elif key == arcade.key.C:  # for now, C button used to cancel build selection in sidebar
+            self.sidebar.CheckforBuild(None)  # Tell sidebar to cancel potential build
         elif key == arcade.key.F4:
             self.manager.enable()
             if self.console_active:
@@ -261,6 +288,7 @@ class Game(arcade.View):
                 self.debugging_console = arcade.gui.UIInputText(text=">", width=self.main_window.width, height=25)
                 self.debugging_console_tex = self.debugging_console.with_background(self.debugging_console_tex_inp)
                 self.v_box.add(self.debugging_console_tex)
+
 
     def on_key_release(self, key, _):
         """Called when the user releases a key."""
@@ -301,6 +329,9 @@ class Game(arcade.View):
                 self.game_scene.add_sprite_list("Selected Tile")
                 self.game_scene.add_sprite("Selected Tile", self.selected_tile)
 
+            self.sidebar.DisplayTile([actual_x, actual_y])
+            self.sidebar.CheckforBuild([actual_x, actual_y])  # also check if trying to build
+
     def on_mouse_release(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.main_window.mouse_left_is_pressed = False
@@ -328,6 +359,10 @@ class Game(arcade.View):
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
+
+
+        self.sidebar.update()
+
         self.ressource_manager.update()
         self.check_win_loose()
 
@@ -396,3 +431,4 @@ class WinLooseMenu(arcade.View):
 
     def on_hide_view(self):
         self.manager.disable()
+
