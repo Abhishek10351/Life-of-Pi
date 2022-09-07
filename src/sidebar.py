@@ -245,11 +245,12 @@ class SideBar(object):
             self.msg_to -= 1
         self.check_button_hover()
         
-        
+        """
         # hack to play with resources (for testing)
         if self.tic % 10 == 0:
             key = ['Ener','Fe','H2O','CO2','C','H','O2','Poly'][random.randint(0,7)]
             self.parent.ressource_manager.current_ressource[key] += 100
+        """
     
     # Gets called by mouse click from parent View
     def CheckforBuild(self, coords):
