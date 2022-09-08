@@ -42,6 +42,21 @@ class RessourceManager:
         self.initial_maximum_money = INITIAL_MAXIMUM_RESSOURCES['Money']
         self.initial_maximum_food = INITIAL_MAXIMUM_RESSOURCES['Food']
         self.initial_maximum_crew = INITIAL_MAXIMUM_RESSOURCES['Crew']
+        
+        self.possible_tile_type = {'base':['bases'],
+                                'garden':['garden'],
+                                'solar':['solar_pannel'],
+                                'geo':['geothermal_generator'],
+                                'battery':['ener_tank'],
+                                'iceextract':['h2o_ice_generator'],
+                                'co2extract':['co2_generator'],
+                                'fe_mining':['fe_generator'],
+                                'factory_co2':['co2_breaker_factory'],
+                                'factory_h2o':['h2o_breaker_factory'],
+                                'factory_poly':['poly_factory'],
+                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank'],
+                                'asteroid_defence':['asteroid_defence'],
+                                'stormshield':['stormshield']}
 
         self.current_ressource = {'H2O': self.initial_h2o,
                                   'CO2': self.initial_co2,
@@ -116,24 +131,14 @@ class RessourceManager:
         self._check_maximum_overpass()
 
     def update_building(self, build_type) -> None:
-        possible_tile_type = {'base':['bases'],
-                                'garden':['garden'],
-                                'solar':['solar_pannel'],
-                                'geo':['geothermal_generator'],
-                                'battery':['ener_tank'],
-                                'iceextract':['h2o_ice_generator'],
-                                'co2extract':['co2_generator'],
-                                'fe_mining':['fe_generator'],
-                                'factory_co2':['co2_breaker_factory'],
-                                'factory_h2o':['h2o_breaker_factory'],
-                                'factory_poly':['poly_factory'],
-                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank'],
-                                'asteroid_defence':['asteroid_defence'],
-                                'stormshield':['stormshield']}
-        for building in possible_tile_type[build_type]:
+        for building in self.possible_tile_type[build_type]:
             setattr(self, building, getattr(self, building) + 1)
         
-        
+    def destroy_building(self, targets) -> None:
+        for target in targets:
+            for building in self.possible_tile_type[target.tile_type]:
+                setattr(self, building, getattr(self, building) - 1)
+            
     
     def check_for_resource(self, resource_to_build) -> bool:
         for key, item in resource_to_build.items():

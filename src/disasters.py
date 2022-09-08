@@ -366,6 +366,7 @@ class Disasters:
             
             # Do stuff to update resource manager ???
             # self.ressource_manager.something ... ???
+            self.parent.ressource_manager.destroy_building(targets)
             
             # track for GUI display
             self.destroyed_locs.add(target.center_x,target.center_y)
