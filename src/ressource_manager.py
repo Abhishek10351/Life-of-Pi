@@ -91,6 +91,9 @@ class RessourceManager:
         self.food_tank = 0
         self.bases = 0
         
+        self.asteroid_defence = 0
+        self.stormshield = 0
+        
         #if energy comes down to 0, will be turn to False and factories wont work anymore until energy comes back to 0
         self.enable_factory = True
 
@@ -124,7 +127,9 @@ class RessourceManager:
                                 'factory_co2':['co2_breaker_factory'],
                                 'factory_h2o':['h2o_breaker_factory'],
                                 'factory_poly':['poly_factory'],
-                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank']}
+                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank'],
+                                'asteroid_defence':['asteroid_defence'],
+                                'stormshield':['stormshield']}
         for building in possible_tile_type[build_type]:
             setattr(self, building, getattr(self, building) + 1)
         

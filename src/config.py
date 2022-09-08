@@ -113,7 +113,9 @@ BUILDING_LIST =    ['h2o_liquid_generator',
                     'poly_tank',
                     'ener_tank',
                     'food_tank',
-                    'bases']
+                    'bases',
+                    'asteroid_defence',
+                    'stormshield']
 
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                             'h2o_ice_generator': 1,
@@ -135,7 +137,9 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                             'poly_tank': 1,
                             'ener_tank': 1, 
                             'food_tank': 1, 
-                            'bases': 0}
+                            'bases': 0,
+                            'asteroid_defence': 5,
+                            'stormshield': 5}
 
 ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                     'h2o_ice_generator': 1 / 60,
@@ -146,7 +150,9 @@ ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                     'h2o_breaker_factory': 2 / 60, 
                     'poly_factory': 1 / 60, 
                     'garden': 1 / 60,  
-                    'bases': 1 / 60}
+                    'bases': 1 / 60,
+                    'asteroid_defence': 2 / 60,
+                    'stormshield': 2 / 60}
 
 RESSOURCE_TO_BUILD = {'base': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['bases']},
                         'garden': {'H2O': 30, 'CO2': 10, 'H': 0,'C': 0,'Fe': 0,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['garden']},
@@ -159,7 +165,9 @@ RESSOURCE_TO_BUILD = {'base': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly'
                         'factory_co2': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['co2_breaker_factory']},
                         'factory_h2o': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_breaker_factory']},
                         'factory_poly':{'H2O': 10, 'CO2': 10, 'H': 10,'C': 20,'Fe': 30,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['poly_factory']},
-                        'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_tank']}}
+                        'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_tank']},
+                        'asteroid_defence': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['asteroid_defence']},
+                        'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['stormshield']}}
         
 # Resource density
 
@@ -185,7 +193,7 @@ TILE_TYPE_BUILD = {"crater": (),
                    "fe_crater": "fe_mining",
                    "geyser": "co2extract",
                    "ice": ("iceextract", "factory_h2o"),
-                   "land": ("base", "garden", "solar", "tank", "battery"),
+                   "land": ("base", "garden", "solar", "tank", "battery","asteroid_defence","stormshield"),
                    "volcano": "geo"
                    }
 
