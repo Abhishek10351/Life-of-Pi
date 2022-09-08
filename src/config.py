@@ -147,7 +147,16 @@ RESSOURCE_TO_BUILD = {'base': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly'
                         'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['tank']},
                         'asteroid_defence': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['asteroid_defence']},
                         'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['stormshield']}}
-        
+
+#Generate doc string for every building
+DESCR_STRING =  {}
+for key, item in RESSOURCE_TO_BUILD.items():
+    DESCR_STRING[key] = ''
+    for key2, item2 in item.items():
+        if item2 != 0:
+            DESCR_STRING[key] += '%s : %i\n' % (key2, item2)
+
+    
 # Resource density
 
 IRON_RICH_TILE = 0.5

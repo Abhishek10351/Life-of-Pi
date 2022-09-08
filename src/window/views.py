@@ -377,11 +377,12 @@ class Game(arcade.View):
 
     def generate_disaster(self):
         """Randomly generate disasters"""
-        rand = random.randint(0, 1 / DISASTER_PROBA)
-        if rand == 0:
-            self.disasters.new_dust_storm()
-        elif rand == 1:
-            self.disasters.new_asteroid_strike()
+        if self.time_delta > 60:
+            rand = random.randint(0, 1 / DISASTER_PROBA)
+            if rand == 0:
+                self.disasters.new_dust_storm()
+            elif rand == 1:
+                self.disasters.new_asteroid_strike()
         
     
     def on_update(self, delta_time):
