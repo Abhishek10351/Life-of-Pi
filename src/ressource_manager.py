@@ -175,6 +175,7 @@ class RessourceManager:
         self.maximum_ressource['O2'] = self.initial_maximum_o2 + self.tank * TANK_STORAGE['tank']
         self.maximum_ressource['Fe'] = self.initial_maximum_fe + self.tank * TANK_STORAGE['tank']
         self.maximum_ressource['Poly'] = self.initial_maximum_poly + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['Food'] = self.initial_maximum_food + self.tank * TANK_STORAGE['tank']
         self.maximum_ressource['Ener'] = self.initial_maximum_energy + self.ener_tank * TANK_STORAGE['ener_tank']
 
     def update_h2o(self) -> None:
