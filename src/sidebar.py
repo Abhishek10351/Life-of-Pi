@@ -3,7 +3,8 @@
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH, DESCR_STRING
+from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
+                    SCREEN_WIDTH)
 from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
@@ -46,6 +47,7 @@ class SideBar:
         self.sb_manager.enable()
 
         # Descriptions
+
         self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members\n",
                                    'garden': "Garden Pod: provide food for crew\n",
                                    'solar': "Solar Generator: \ngenerates energy\n",
@@ -58,7 +60,8 @@ class SideBar:
                                    'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
-                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids\n",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
+                                                       "\nin-coming asteroids\n",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n"}
         for key in self.build_descriptions.keys():
             self.build_descriptions[key] += DESCR_STRING[key]
@@ -354,7 +357,7 @@ class SideBar:
     def draw_time_left(self):
         arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
                          (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
-    
+
     # used to display some information about the current tile selected by
     # player from Main View
     def DisplayTile(self, coords):

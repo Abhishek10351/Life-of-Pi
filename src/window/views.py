@@ -9,12 +9,12 @@ from scipy import interpolate
 
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
-                    DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    STYLE_GOLDEN_TANOI, VOLCANO, RESSOURCE_TO_BUILD, DISASTER_PROBA)
+                    DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
+                    IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
+                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO)
+from disasters import Disasters
 from ressource_manager import RessourceManager
 from sidebar import SideBar
-from disasters import Disasters
 from utils import Tile, TileList, rect2isometric
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -135,9 +135,9 @@ class Game(arcade.View):
         self.screen_center_y = 0
 
         self.sidebar = SideBar(self)
-        
+
         self.disasters = Disasters(self)
-        
+
         self.manager = None
         self.v_box: arcade.gui.UIBoxLayout = None
         self.console_active = False
@@ -200,15 +200,9 @@ class Game(arcade.View):
         self.sidebar.setup_sidebar()
         self.disasters.setup()
 
-    # try_to_build: function gets called from sidebar when player
-    # tries to build something/somewhere
-    #
-    # TODO: Can implement placing something on the map etc.
-    #
-    # return true/false (can/can't build)
     def try_to_build(self, build_type):
         build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
-                                   "co2extract": "factory_co2_iso.png",
+                                   "co2extract": "co2_generator_iso.png",
                                    "iceextract": "ice_generator_iso.png",
                                    "factory_h2o": "factory_h2o_iso.png",
                                    "base": "base_iso.png",
@@ -219,9 +213,9 @@ class Game(arcade.View):
                                    "geo": "geotherm001_iso.png",
                                    "factory_poly": "factory_poly_iso.png",
                                    "asteroid_defence": "asteroid_defence_iso.png",
-                                   "stormshield": "stormshield_iso.png",}
+                                   "stormshield": "stormshield_iso.png", }
         if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
-        and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
+                and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
             prev_tile = self.selected_tile
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
                                       build_type)
@@ -247,9 +241,9 @@ class Game(arcade.View):
             self.disasters.draw()
 
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
-        
-        self.disasters.draw_special() # drawing outside ambient light layer
-        
+
+        self.disasters.draw_special()  # drawing outside ambient light layer
+
         self.sidebar.draw()  # side bar outside of light layer
 
         if self.console_active:
@@ -383,18 +377,19 @@ class Game(arcade.View):
                 self.disasters.new_dust_storm()
             elif rand == 1:
                 self.disasters.new_asteroid_strike()
-        
-    
+
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
-        
+
         self.disasters.update()
         self.sidebar.update()
-        self.ressource_manager.update(self.tile_sprite_list)
+
+        self.ressource_manager.update()
         self.generate_disaster()
+
         self.check_win_loose()
 
 
