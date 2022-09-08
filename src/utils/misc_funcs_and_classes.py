@@ -35,7 +35,7 @@ class Tile(arcade.Sprite):
     def check_build(self, build_type: str, lst_neighbours):
         if build_type in TILE_TYPE_BUILD[self.tile_type]:
             return True
-        elif build_type == "factory_poly":
+        elif "factory" in build_type:
             tile_type_neighbours = []
             for neighbour in lst_neighbours:
                 if neighbour:
@@ -77,14 +77,14 @@ class TileList(arcade.SpriteList):
 
     def get_neighbours(self, sprite: Tile) -> List[Tile]:
         """Returns a list containing the neighbours of tile in the format (N, NE, E, SE, S, SW, W, NW)"""
-        north_tile = self.get(sprite.isometric_x, sprite.isometric_y + 1).tile_type
-        north_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y + 1).tile_type
-        east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y).tile_type
-        south_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y - 1).tile_type
-        south_tile = self.get(sprite.isometric_x, sprite.isometric_y - 1).tile_type
-        south_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y - 1).tile_type
-        west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y).tile_type
-        north_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y + 1).tile_type
+        north_tile = self.get(sprite.isometric_x, sprite.isometric_y + 1)
+        north_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y + 1)
+        east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y)
+        south_east_tile = self.get(sprite.isometric_x + 1, sprite.isometric_y - 1)
+        south_tile = self.get(sprite.isometric_x, sprite.isometric_y - 1)
+        south_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y - 1)
+        west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y)
+        north_west_tile = self.get(sprite.isometric_x - 1, sprite.isometric_y + 1)
 
         # removed excessive error handling.
         # try:
