@@ -5,6 +5,7 @@ from config import (CREW_MEMBER_TO_OPERATE, CREW_PER_BASES, ENER_PER_BUILDING,
                     RESSOURCE_GENERATION, RESSOURCES_LIST, TANK_STORAGE)
 
 
+
 class RessourceManager:
     """Manage the ressources owned by the player and the maximum amount of ressources that can be stored.
     Ressource is french of resource.
@@ -143,7 +144,7 @@ class RessourceManager:
 
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
-        self.current_ressource['O2'] -= O2_CONSUMPTION
+        self.current_ressource['O2'] -= O2_CONSUMPTION_PER_CREW * self.current_ressource['Total_crew']
 
     def update_food(self) -> None:
         """Function that simulate the food production and consumption"""
