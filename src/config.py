@@ -159,8 +159,8 @@ RESSOURCE_TO_BUILD = {
     'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
                     'Crew': CREW_MEMBER_TO_OPERATE['stormshield']}}
 
-#Generate doc string for every building
-DESCR_STRING =  {}
+# Generate doc string for every building
+DESCR_STRING = {}
 for key, item in RESSOURCE_TO_BUILD.items():
     DESCR_STRING[key] = ''
     for key2, item2 in item.items():

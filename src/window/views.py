@@ -9,12 +9,11 @@ from scipy import interpolate
 
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
-                    DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
-                    LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    STYLE_GOLDEN_TANOI, VOLCANO, RESSOURCE_TO_BUILD, DISASTER_PROBA)
-    
-from ressource_manager import RessourceManager
+                    DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
+                    IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
+                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO)
 from disasters import Disasters
+from ressource_manager import RessourceManager
 from sidebar import SideBar
 from utils import Tile, TileList, rect2isometric
 
@@ -378,8 +377,7 @@ class Game(arcade.View):
                 self.disasters.new_dust_storm()
             elif rand == 1:
                 self.disasters.new_asteroid_strike()
-        
-    
+
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
@@ -389,7 +387,7 @@ class Game(arcade.View):
         self.disasters.update()
         self.sidebar.update()
 
-        self.ressource_manager.update(self.tile_sprite_list)
+        self.ressource_manager.update()
         self.generate_disaster()
 
         self.check_win_loose()
