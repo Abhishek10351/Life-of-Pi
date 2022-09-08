@@ -202,7 +202,7 @@ class Game(arcade.View):
 
     def try_to_build(self, build_type):
         build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
-                                   "co2extract": "factory_co2_iso.png",
+                                   "co2extract": "co2_generator_iso.png",
                                    "iceextract": "ice_generator_iso.png",
                                    "factory_h2o": "factory_h2o_iso.png",
                                    "base": "base_iso.png",

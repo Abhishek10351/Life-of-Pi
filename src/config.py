@@ -182,7 +182,7 @@ O2_CONSUMPTION = 2 / 60
 TILE_TYPE_BUILD = {"crater": (),
                    "fe_crater": "fe_mining",
                    "geyser": "co2extract",
-                   "ice": ("iceextract", "factory_h2o"),
+                   "ice": "iceextract",
                    "land": ("base", "garden", "solar", "tank", "battery", "asteroid_defence", "stormshield"),
                    "volcano": "geo"
                    }
