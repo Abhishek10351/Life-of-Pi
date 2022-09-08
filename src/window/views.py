@@ -217,10 +217,11 @@ class Game(arcade.View):
                                    "tank": "tank_iso.png",
                                    "battery": "battery_iso.png",
                                    "geo": "geotherm001_iso.png",
-                                   "factory_poly": "factory_poly_iso.png"}
-        #if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
-        #and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
-        if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)):
+                                   "factory_poly": "factory_poly_iso.png",
+                                   "asteroid_defence": "asteroid_defence_iso.png",
+                                   "stormshield": "stormshield_iso.png",}
+        if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
+        and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
             prev_tile = self.selected_tile
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
                                       build_type)
@@ -366,7 +367,6 @@ class Game(arcade.View):
         self.camera.move_to(camera_centered)
 
     def check_win_loose(self):
-        return # hack now for testing
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
             print(self.ressource_manager.current_ressource)
             winloose = WinLooseMenu(self.main_window, 'Game Over !')

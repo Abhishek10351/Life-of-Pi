@@ -8,7 +8,7 @@ from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
 RES_TEXT_HEIGHT = 180
-BUILDTEXTHEIGHT = 15
+BUILDTEXTHEIGHT = 35
 
 
 # SideBar: controls things like the build menu
@@ -57,7 +57,9 @@ class SideBar:
                                    'factory_co2': "CO Factory: generate C and O \nfrom CO2",
                                    'factory_h2o': "HO Factory: generate H and O \nfrom H2O",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H",
-                                   'tank': "Tank: used to store chemicals."}
+                                   'tank': "Tank: used to store chemicals",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids",
+                                   'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms"}
 
         # Button data
         buttons = [
@@ -73,6 +75,8 @@ class SideBar:
             ['factory_h2o', 80, 200, 'factory_h2o_off.png', 'factory_h2o_on.png'],
             ['factory_poly', 140, 200, 'factory_poly_off.png', 'factory_poly_on.png'],
             ['tank', 20, 260, 'tank_off.png', 'tank_on.png'],
+            ['asteroid_defence', 80, 260, 'asteroid_defence_off.png', 'asteroid_defence_on.png'],
+            ['stormshield', 140, 260, 'stormshield_off.png', 'stormshield_on.png'],
         ]
 
         # Create the buttons
@@ -148,17 +152,11 @@ class SideBar:
                                         str(ASSET_PATH / "sprites_iso" / "factory_h2o_iso.png")),
                                     'factory_poly': arcade.load_texture(
                                         str(ASSET_PATH / "sprites_iso" / "factory_poly_iso.png")),
-                                    'tank': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "tank_iso.png"))}
-
-        """
-        Buildlist:
-
-        base, garden pod
-        solar gen, geo thermal, storage battery
-        ice extractor, Co2 extractor, fe mining
-        factory: co2, h20, poly
-        storage tanks: many
-        """
+                                    'tank': arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "tank_iso.png")),
+                                    'asteroid_defence': arcade.load_texture(
+                                        str(ASSET_PATH / "sprites_iso" / "asteroid_defence_iso.png")),
+                                    'stormshield': arcade.load_texture(
+                                        str(ASSET_PATH / "sprites_iso" / "stormshield_iso.png"))}
 
         self.res_label1 = arcade.gui.UILabel(0, 0, font_size=14,
                                              text_color=(0, 100, 0), text="Press R to see resources")

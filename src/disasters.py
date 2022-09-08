@@ -18,7 +18,8 @@ ASTEROID_VERT_START = 1000
 ASTEROID_BLAST_RADIUS = 200
 
 BUILD_LIST = ['base','garden','solar','geo','battery','iceextract','co2extract',
-            'fe_mining','factory_co2','factory_h2o', 'factory_poly','tank']
+            'fe_mining','factory_co2','factory_h2o', 'factory_poly','tank',
+            'asteroid_defence','stormshield']
 
 SHIELD_RADIUS = 200
 LASER_RADIUS = 300
@@ -89,7 +90,7 @@ class DustStorm():
     def get_unprotected_buildings(self):
         self.shields_list = []
         for tile in self.parent.parent.tile_sprite_list:
-            if tile.tile_type in ['base']: # TODO: replace with storm shield generator
+            if tile.tile_type in ['stormshield']: # TODO: replace with storm shield generator
                 self.shields_list.append(tile)
         
         self.unprotected_list = []
@@ -212,7 +213,7 @@ class AsteroidStrike():
     def check_for_defence(self):
         lasers_in_range = []
         for tile in self.parent.parent.tile_sprite_list:
-            if tile.tile_type in ['base']: # TODO: replace with asteroid defense station
+            if tile.tile_type in ['asteroid_defence']:
                 dist = math.sqrt( (self.target_x - tile.center_x) ** 2 + (self.target_y - tile.center_y) ** 2 )
                 if dist <= LASER_RADIUS:
                     lasers_in_range.append(tile)
