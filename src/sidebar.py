@@ -58,7 +58,8 @@ class SideBar:
                                    'factory_h2o': "HO Factory: generate H and O \nfrom H2O",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H",
                                    'tank': "Tank: used to store chemicals",
-                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
+                                                       "\nin-coming asteroids",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms"}
 
         # Button data
@@ -352,7 +353,7 @@ class SideBar:
     def draw_time_left(self):
         arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
                          (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
-    
+
     # used to display some information about the current tile selected by
     # player from Main View
     def DisplayTile(self, coords):

@@ -1,9 +1,8 @@
-from operator import ge
-from config import (INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
-
-                    INITIAL_RESSOURCES_LEVEL_0, RESSOURCE_GENERATION,
-                    TANK_STORAGE, O2_CONSUMPTION, FOOD_CONSUMPTION_PER_MEMBER_CREW,
-                    CREW_PER_BASES, CREW_MEMBER_TO_OPERATE, RESSOURCES_LIST, ENER_PER_BUILDING)
+from config import (CREW_MEMBER_TO_OPERATE, CREW_PER_BASES, ENER_PER_BUILDING,
+                    FOOD_CONSUMPTION_PER_MEMBER_CREW,
+                    INITIAL_MAXIMAL_RESSOURCES_LEVEL_0,
+                    INITIAL_RESSOURCES_LEVEL_0, O2_CONSUMPTION,
+                    RESSOURCE_GENERATION, RESSOURCES_LIST, TANK_STORAGE)
 
 
 class RessourceManager:
@@ -42,21 +41,21 @@ class RessourceManager:
         self.initial_maximum_money = INITIAL_MAXIMUM_RESSOURCES['Money']
         self.initial_maximum_food = INITIAL_MAXIMUM_RESSOURCES['Food']
         self.initial_maximum_crew = INITIAL_MAXIMUM_RESSOURCES['Crew']
-        
-        self.possible_tile_type = {'base':['bases'],
-                                'garden':['garden'],
-                                'solar':['solar_pannel'],
-                                'geo':['geothermal_generator'],
-                                'battery':['ener_tank'],
-                                'iceextract':['h2o_ice_generator'],
-                                'co2extract':['co2_generator'],
-                                'fe_mining':['fe_generator'],
-                                'factory_co2':['co2_breaker_factory'],
-                                'factory_h2o':['h2o_breaker_factory'],
-                                'factory_poly':['poly_factory'],
-                                'tank':['tank'],
-                                'asteroid_defence':['asteroid_defence'],
-                                'stormshield':['stormshield']}
+
+        self.possible_tile_type = {'base': ['bases'],
+                                   'garden': ['garden'],
+                                   'solar': ['solar_pannel'],
+                                   'geo': ['geothermal_generator'],
+                                   'battery': ['ener_tank'],
+                                   'iceextract': ['h2o_ice_generator'],
+                                   'co2extract': ['co2_generator'],
+                                   'fe_mining': ['fe_generator'],
+                                   'factory_co2': ['co2_breaker_factory'],
+                                   'factory_h2o': ['h2o_breaker_factory'],
+                                   'factory_poly': ['poly_factory'],
+                                   'tank': ['tank'],
+                                   'asteroid_defence': ['asteroid_defence'],
+                                   'stormshield': ['stormshield']}
 
         self.current_ressource = {'H2O': self.initial_h2o,
                                   'CO2': self.initial_co2,
@@ -69,7 +68,7 @@ class RessourceManager:
                                   'Money': self.initial_money,
                                   'Food': self.initial_food,
                                   'Total_crew': self.initial_crew,
-                                  'Crew' : self.initial_crew}
+                                  'Crew': self.initial_crew}
 
         self.maximum_ressource = {'H2O': self.initial_maximum_h2o,
                                   'CO2': self.initial_maximum_co2,
@@ -98,14 +97,14 @@ class RessourceManager:
         self.tank = 0
         self.ener_tank = 0
         self.bases = 0
-        
+
         self.asteroid_defence = 0
         self.stormshield = 0
-        
-        #if energy comes down to 0, will be turn to False and factories wont work anymore until energy comes back to 0
+
+        # if energy comes down to 0, will be turn to False and factories wont work anymore until energy comes back to 0
         self.enable_factory = True
 
-    def update(self, tile_sprite_list) -> None:
+    def update(self) -> None:
         """
         Update the amount of stored ressource when called
         """
@@ -126,13 +125,12 @@ class RessourceManager:
     def update_building(self, build_type) -> None:
         for building in self.possible_tile_type[build_type]:
             setattr(self, building, getattr(self, building) + 1)
-        
+
     def destroy_building(self, targets) -> None:
         for target in targets:
             for building in self.possible_tile_type[target.tile_type]:
                 setattr(self, building, getattr(self, building) - 1)
-            
-    
+
     def check_for_resource(self, resource_to_build) -> bool:
         for key, item in resource_to_build.items():
             if self.current_ressource[key] < item:
@@ -142,7 +140,7 @@ class RessourceManager:
     def consume_resource_to_build(self, resource_to_build) -> None:
         for key, item in resource_to_build.items():
             self.current_ressource[key] -= item
-    
+
     def o2_consumption(self) -> None:
         """Function that simulate the O2 consumption"""
         self.current_ressource['O2'] -= O2_CONSUMPTION
@@ -152,15 +150,15 @@ class RessourceManager:
         self.current_ressource['Food'] -= FOOD_CONSUMPTION_PER_MEMBER_CREW * self.current_ressource['Total_crew']
         if self.enable_factory:
             self.current_ressource['Food'] += self.garden * RESSOURCE_GENERATION['garden']
-        
+
     def update_crew(self) -> None:
-        #You have a total crew of 1 (yourself) when you don't have bases
-        self.maximum_ressource['Crew'] =  1 + (CREW_PER_BASES * self.bases)
+        # You have a total crew of 1 (yourself) when you don't have bases
+        self.maximum_ressource['Crew'] = 1 + (CREW_PER_BASES * self.bases)
         self.current_ressource['Total_crew'] = 1 + (CREW_PER_BASES * self.bases)
         self.current_ressource['Crew'] = self.current_ressource['Total_crew']
         for key, item in CREW_MEMBER_TO_OPERATE.items():
             self.current_ressource['Crew'] -= getattr(self, key) * item
-    
+
     def _check_maximum_overpass(self) -> None:
         for key in RESSOURCES_LIST:
             if self.current_ressource[key] > self.maximum_ressource[key]:
@@ -183,8 +181,8 @@ class RessourceManager:
         Update H2O ressource
         """
         add_h2o = self.h2o_liquid_generator * RESSOURCE_GENERATION['h2o_liquid_generator'] \
-            + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
-            + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
+                  + self.h2o_ice_generator * RESSOURCE_GENERATION['h2o_ice_generator'] \
+                  + self.h2o_vapor_generator * RESSOURCE_GENERATION['h2o_vapor_generator']
         self.current_ressource['H2O'] += add_h2o
         if self.current_ressource['H2O'] - RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory >= 0:
             self.current_ressource['H2O'] -= RESSOURCE_GENERATION['h2o_breaker_factory'] * self.h2o_breaker_factory
