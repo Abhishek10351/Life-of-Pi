@@ -3,7 +3,7 @@
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH
+from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH, DESCR_STRING
 from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
@@ -46,20 +46,22 @@ class SideBar:
         self.sb_manager.enable()
 
         # Descriptions
-        self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members",
-                                   'garden': "Garden Pod: provide food for crew",
-                                   'solar': "Solar Generator: \ngenerates energy",
-                                   'geo': "Geo-Thermal Generator: \ngenerates energy",
-                                   'battery': "Battery: needed to store energy",
-                                   'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources",
-                                   'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers",
-                                   'fe_mining': "Fe/Iron Mining Operation: \ncollects Fe from crater deposits",
-                                   'factory_co2': "CO Factory: generate C and O \nfrom CO2",
-                                   'factory_h2o': "HO Factory: generate H and O \nfrom H2O",
-                                   'factory_poly': "Polymer Factory: generates \npolymers from C and H",
-                                   'tank': "Tank: used to store chemicals",
-                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids",
-                                   'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms"}
+        self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members\n",
+                                   'garden': "Garden Pod: provide food for crew\n",
+                                   'solar': "Solar Generator: \ngenerates energy\n",
+                                   'geo': "Geo-Thermal Generator: \ngenerates energy\n",
+                                   'battery': "Battery: needed to store energy\n",
+                                   'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources\n",
+                                   'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers\n",
+                                   'fe_mining': "Fe/Iron Mining Operation: \ncollects Fe from crater deposits\n",
+                                   'factory_co2': "CO Factory: generate C and O \nfrom CO2\n",
+                                   'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
+                                   'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
+                                   'tank': "Tank: used to store chemicals\n",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids\n",
+                                   'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n"}
+        for key in self.build_descriptions.keys():
+            self.build_descriptions[key] += DESCR_STRING[key]
 
         # Button data
         buttons = [
@@ -161,9 +163,9 @@ class SideBar:
         self.res_label1 = arcade.gui.UILabel(0, 0, font_size=14,
                                              text_color=(0, 100, 0), text="Press R to see resources")
         anchor = arcade.gui.UIAnchorWidget(
-            anchor_x="left",
+            anchor_x="right",
             anchor_y="bottom",
-            align_x=15,
+            align_x=0,
             align_y=15,
             child=self.res_label1)
         self.res_label1.anchor = anchor
@@ -172,9 +174,9 @@ class SideBar:
         self.res_label2 = arcade.gui.UILabel(0, 0, font_size=14,
                                              text_color=(0, 200, 0), text="Resources (R to close)")
         anchor = arcade.gui.UIAnchorWidget(
-            anchor_x="left",
+            anchor_x="right",
             anchor_y="bottom",
-            align_x=15,
+            align_x=0,
             align_y=15,
             child=self.res_label2)
         self.res_label2.anchor = anchor
@@ -321,7 +323,7 @@ class SideBar:
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
-            arcade.draw_text(line, 90, h, arcade.color.GREEN, font_size=12,
+            arcade.draw_text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN, font_size=12,
                              anchor_x="right", anchor_y="center")
         keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food', 'Crew']
 
@@ -341,12 +343,12 @@ class SideBar:
             if have >= max_cap:
                 line += ' Full! Build more '
                 if key in ['Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food']:
-                    line += 'storage tanks'
+                    line += 'tanks'
                 elif key in ['Ener']:
                     line += 'batteries'
                 elif key in ['Crew']:
                     line += 'bases'
-            arcade.draw_text(line, 100, h, text_col, font_size=12,
+            arcade.draw_text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
                              anchor_x="left", anchor_y="center")
 
     def draw_time_left(self):
