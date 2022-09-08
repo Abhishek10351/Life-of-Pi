@@ -71,12 +71,12 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
                                       'Crew':1}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
-                        'h2o_ice_generator': 1 / 60,
+                        'h2o_ice_generator': 3 / 60,
                         'h2o_vapor_generator': 3 / 60,
-                        'co2_generator': 2 / 60,
+                        'co2_generator': 3 / 60,
                         'fe_generator': 3 / 60,
-                        'co2_breaker_factory': 1 / 60,
-                        'h2o_breaker_factory': 1 / 60,
+                        'co2_breaker_factory': 2 / 60,
+                        'h2o_breaker_factory': 2 / 60,
                         'poly_factory': 0.5 / 60,
                         'solar_pannel': 2 / 60,
                         'geothermal_generator': 5 / 60,
@@ -106,11 +106,11 @@ BUILDING_LIST =    ['h2o_liquid_generator',
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                             'h2o_ice_generator': 1,
                             'h2o_vapor_generator': 3,
-                            'co2_generator': 2,
+                            'co2_generator': 1,
                             'fe_generator': 1,
-                            'co2_breaker_factory': 3,
+                            'co2_breaker_factory': 2,
                             'h2o_breaker_factory': 2, 
-                            'poly_factory': 2, 
+                            'poly_factory': 3, 
                             'solar_pannel': 1, 
                             'geothermal_generator': 5, 
                             'garden': 1,
@@ -159,11 +159,11 @@ for key, item in RESSOURCE_TO_BUILD.items():
     
 # Resource density
 
-IRON_RICH_TILE = 0.5
-VOLCANO = 0.1
-CARBON_DIOXIDE_GEYSERS = 0.4
-ICY_TILE = 1.0
-CRATER = 33.0
+IRON_RICH_TILE = 2
+VOLCANO = 0.5
+CARBON_DIOXIDE_GEYSERS = 2
+ICY_TILE = 3
+CRATER = 10
 LAND = 100 - (IRON_RICH_TILE + VOLCANO + CARBON_DIOXIDE_GEYSERS + ICY_TILE + CRATER)
 
 # Total day time in second
@@ -173,7 +173,7 @@ BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME /
                    DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
 BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
 
-O2_CONSUMPTION_PER_CREW = 2 / 60
+O2_CONSUMPTION_PER_CREW = 0.5 / 60
 
 # Tile build dict
 
@@ -185,7 +185,7 @@ TILE_TYPE_BUILD = {"crater": (),
                    "volcano": "geo"
                    }
 
-FOOD_CONSUMPTION_PER_MEMBER_CREW = 2 / 60
+FOOD_CONSUMPTION_PER_MEMBER_CREW = 1 / 60
 CREW_PER_BASES = 5
 PARTY_TIME = 600
 
