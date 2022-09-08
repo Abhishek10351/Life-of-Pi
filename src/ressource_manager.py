@@ -54,7 +54,7 @@ class RessourceManager:
                                 'factory_co2':['co2_breaker_factory'],
                                 'factory_h2o':['h2o_breaker_factory'],
                                 'factory_poly':['poly_factory'],
-                                'tank':['h2o_tank', 'co2_tank', 'c_tank', 'h_tank', 'o2_tank', 'fe_tank', 'poly_tank', 'food_tank'],
+                                'tank':['tank'],
                                 'asteroid_defence':['asteroid_defence'],
                                 'stormshield':['stormshield']}
 
@@ -95,15 +95,8 @@ class RessourceManager:
         self.geothermal_generator = 0
         self.garden = 0
 
-        self.h2o_tank = 0
-        self.co2_tank = 0
-        self.c_tank = 0
-        self.h_tank = 0
-        self.o2_tank = 0
-        self.fe_tank = 0
-        self.poly_tank = 0
+        self.tank = 0
         self.ener_tank = 0
-        self.food_tank = 0
         self.bases = 0
         
         self.asteroid_defence = 0
@@ -175,13 +168,13 @@ class RessourceManager:
 
     def update_storage_capacity(self) -> None:
         """Updates the resource capacity for each of the resource."""
-        self.maximum_ressource['H2O'] = self.initial_maximum_h2o + self.h2o_tank * TANK_STORAGE['h2o_tank']
-        self.maximum_ressource['CO2'] = self.initial_maximum_co2 + self.co2_tank * TANK_STORAGE['co2_tank']
-        self.maximum_ressource['C'] = self.initial_maximum_c + self.c_tank * TANK_STORAGE['c_tank']
-        self.maximum_ressource['H'] = self.initial_maximum_h + self.h_tank * TANK_STORAGE['h_tank']
-        self.maximum_ressource['O2'] = self.initial_maximum_o2 + self.o2_tank * TANK_STORAGE['o2_tank']
-        self.maximum_ressource['Fe'] = self.initial_maximum_fe + self.fe_tank * TANK_STORAGE['fe_tank']
-        self.maximum_ressource['Poly'] = self.initial_maximum_poly + self.poly_tank * TANK_STORAGE['poly_tank']
+        self.maximum_ressource['H2O'] = self.initial_maximum_h2o + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['CO2'] = self.initial_maximum_co2 + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['C'] = self.initial_maximum_c + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['H'] = self.initial_maximum_h + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['O2'] = self.initial_maximum_o2 + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['Fe'] = self.initial_maximum_fe + self.tank * TANK_STORAGE['tank']
+        self.maximum_ressource['Poly'] = self.initial_maximum_poly + self.tank * TANK_STORAGE['tank']
         self.maximum_ressource['Ener'] = self.initial_maximum_energy + self.ener_tank * TANK_STORAGE['ener_tank']
 
     def update_h2o(self) -> None:
