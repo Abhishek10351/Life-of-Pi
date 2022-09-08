@@ -14,6 +14,7 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     STYLE_GOLDEN_TANOI, VOLCANO, RESSOURCE_TO_BUILD)
 from ressource_manager import RessourceManager
 from sidebar import SideBar
+from disasters import Disasters
 from utils import Tile, TileList, rect2isometric
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
@@ -134,7 +135,9 @@ class Game(arcade.View):
         self.screen_center_y = 0
 
         self.sidebar = SideBar(self)
-
+        
+        self.disasters = Disasters(self)
+        
         self.manager = None
         self.v_box: arcade.gui.UIBoxLayout = None
         self.console_active = False
@@ -195,6 +198,7 @@ class Game(arcade.View):
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
 
         self.sidebar.setup_sidebar()
+        self.disasters.setup()
 
     # try_to_build: function gets called from sidebar when player
     # tries to build something/somewhere
@@ -238,9 +242,12 @@ class Game(arcade.View):
         with self.light_layer:
             self.tile_sprite_list.draw()
             self.game_scene.draw()
+            self.disasters.draw()
 
         self.light_layer.draw(ambient_color=self.get_daytime_brightness())
-
+        
+        self.disasters.draw_special() # drawing outside ambient light layer
+        
         self.sidebar.draw()  # side bar outside of light layer
 
         if self.console_active:
@@ -269,6 +276,10 @@ class Game(arcade.View):
             self.sidebar.switch_resview()
         elif key == arcade.key.C:  # for now, C button used to cancel build selection in sidebar
             self.sidebar.CheckforBuild(None)  # Tell sidebar to cancel potential build
+        elif key == arcade.key.P:  # used for testing disasters
+            self.disasters.new_dust_storm()
+        elif key == arcade.key.O:  # used for testing asteroid strike
+            self.disasters.new_asteroid_strike()
         elif key == arcade.key.F4:
             self.manager.enable()
             if self.console_active:
@@ -354,6 +365,7 @@ class Game(arcade.View):
         self.camera.move_to(camera_centered)
 
     def check_win_loose(self):
+        return # hack now for testing
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
             print(self.ressource_manager.current_ressource)
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
@@ -367,7 +379,8 @@ class Game(arcade.View):
         self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
-
+        
+        self.disasters.update()
         self.sidebar.update()
         self.ressource_manager.update(self.tile_sprite_list)
         self.check_win_loose()
