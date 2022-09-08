@@ -144,7 +144,7 @@ RESSOURCE_TO_BUILD = {'base': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly'
                         'factory_co2': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['co2_breaker_factory']},
                         'factory_h2o': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_breaker_factory']},
                         'factory_poly':{'H2O': 10, 'CO2': 10, 'H': 10,'C': 20,'Fe': 30,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['poly_factory']},
-                        'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['h2o_tank']},
+                        'tank': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 10,'Poly': 0, 'Crew':CREW_MEMBER_TO_OPERATE['tank']},
                         'asteroid_defence': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['asteroid_defence']},
                         'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0,'C': 0,'Fe': 20,'Poly': 10, 'Crew':CREW_MEMBER_TO_OPERATE['stormshield']}}
         
