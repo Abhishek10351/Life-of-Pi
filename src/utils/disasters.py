@@ -6,8 +6,8 @@ import random
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH
 import utils
+from config import ASSET_PATH
 
 DUSTSTORM_TIME_TICS = 10 * 60
 DUST_HAZE = 180

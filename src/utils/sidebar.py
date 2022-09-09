@@ -4,9 +4,9 @@ from typing import Dict
 import arcade
 import arcade.gui
 
-from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
-                    SCREEN_WIDTH, TILE_TYPE_BUILD)
 import utils
+from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
+                    SCREEN_WIDTH)
 
 DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
