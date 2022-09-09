@@ -12,14 +12,10 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
                     IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
                     RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO)
-from disasters import Disasters
-from ressource_manager import RessourceManager
-from sidebar import SideBar
-from utils import Tile, TileList, rect2isometric
+from utils import (Disasters, RessourceManager, SideBar, Tile, TileList,
+                   rect2isometric)
 
 # from re import S
-
-
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
