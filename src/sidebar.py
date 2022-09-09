@@ -6,7 +6,7 @@ import arcade.gui
 from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH, DESCR_STRING
 from utils import isometric2rect
 
-DESCR_TEXT_HEIGHT = 240
+DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
 BUILDTEXTHEIGHT = 35
 
@@ -59,7 +59,8 @@ class SideBar:
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
                                    'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids\n",
-                                   'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n"}
+                                   'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n",
+                                   'rocket': "Build a rocket to reach mars's moon\nand win the game\n"}
         for key in self.build_descriptions.keys():
             self.build_descriptions[key] += DESCR_STRING[key]
 
@@ -79,6 +80,7 @@ class SideBar:
             ['tank', 20, 260, 'tank_off.png', 'tank_on.png'],
             ['asteroid_defence', 80, 260, 'asteroid_defence_off.png', 'asteroid_defence_on.png'],
             ['stormshield', 140, 260, 'stormshield_off.png', 'stormshield_on.png'],
+            ['rocket', 20, 320, 'rocket_off.png', 'rocket_on.png']
         ]
 
         # Create the buttons
@@ -158,7 +160,9 @@ class SideBar:
                                     'asteroid_defence': arcade.load_texture(
                                         str(ASSET_PATH / "sprites_iso" / "asteroid_defence_iso.png")),
                                     'stormshield': arcade.load_texture(
-                                        str(ASSET_PATH / "sprites_iso" / "stormshield_iso.png"))}
+                                        str(ASSET_PATH / "sprites_iso" / "stormshield_iso.png")),
+                                    'rocket': arcade.load_texture(
+                                        str(ASSET_PATH / "sprites_iso" / "rocket_iso.png"))}
 
         self.res_label1 = arcade.gui.UILabel(0, 0, font_size=14,
                                              text_color=(0, 100, 0), text="Press R to see resources")

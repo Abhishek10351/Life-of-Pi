@@ -101,7 +101,8 @@ BUILDING_LIST = ['h2o_liquid_generator',
                  'ener_tank',
                  'bases',
                  'asteroid_defence',
-                 'stormshield']
+                 'stormshield',
+                 'rocket']
 
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'h2o_ice_generator': 1,
@@ -118,7 +119,8 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'ener_tank': 1,
                           'bases': 0,
                           'asteroid_defence': 5,
-                          'stormshield': 5}
+                          'stormshield': 5,
+                          'rocket': 50}
 
 ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'h2o_ice_generator': 1 / 60,
@@ -157,7 +159,9 @@ RESSOURCE_TO_BUILD = {
     'asteroid_defence': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
                          'Crew': CREW_MEMBER_TO_OPERATE['asteroid_defence']},
     'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
-                    'Crew': CREW_MEMBER_TO_OPERATE['stormshield']}}
+                    'Crew': CREW_MEMBER_TO_OPERATE['stormshield']},
+    'rocket': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 1000, 'Poly': 1000,
+                    'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
 
 # Generate doc string for every building
 DESCR_STRING = {}
@@ -192,7 +196,7 @@ TILE_TYPE_BUILD = {"crater": (),
                    "fe_crater": "fe_mining",
                    "geyser": "co2extract",
                    "ice": "iceextract",
-                   "land": ("base", "garden", "solar", "tank", "battery", "asteroid_defence", "stormshield"),
+                   "land": ("base", "garden", "solar", "tank", "battery", "asteroid_defence", "stormshield", "rocket"),
                    "volcano": "geo"
                    }
 

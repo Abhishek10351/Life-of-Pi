@@ -1,5 +1,6 @@
 import datetime
 import random
+from re import S
 import time
 
 import arcade
@@ -224,9 +225,10 @@ class Game(arcade.View):
                                    "geo": "geotherm001_iso.png",
                                    "factory_poly": "factory_poly_iso.png",
                                    "asteroid_defence": "asteroid_defence_iso.png",
-                                   "stormshield": "stormshield_iso.png", }
+                                   "stormshield": "stormshield_iso.png",
+                                   "rocket": "rocket_iso.png"}
         if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
-                and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
+                and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type], build_type):
             prev_tile = self.selected_tile
             if self.selected_tile.tile_type == 'easter_crater':
                 self.ressource_manager.current_ressource['Fe'] += 1000
@@ -375,10 +377,9 @@ class Game(arcade.View):
 
     def check_win_loose(self):
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
-            print(self.ressource_manager.current_ressource)
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
             self.main_window.show_view(winloose)
-        if self.time_delta > PARTY_TIME:
+        if self.time_delta > PARTY_TIME or self.ressource_manager.rocket > 0:
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
 
