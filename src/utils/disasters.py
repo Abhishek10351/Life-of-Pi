@@ -7,7 +7,7 @@ import arcade
 import arcade.gui
 
 from config import ASSET_PATH
-from utils import Tile
+import utils
 
 DUSTSTORM_TIME_TICS = 10 * 60
 DUST_HAZE = 180
@@ -362,13 +362,13 @@ class Disasters:
 
             # remove target from tiles, replace with empty ground
             if target.tile_type == 'iceextract':
-                new_tile = Tile(str(ASSET_PATH / "tiles" / 'ice_iso.png'), "ice")
+                new_tile = utils.Tile(str(ASSET_PATH / "tiles" / 'ice_iso.png'), "ice")
             elif target.tile_type == 'co2extract':
-                new_tile = Tile(str(ASSET_PATH / "tiles" / 'geyser_iso.png'), "geyser")
+                new_tile = utils.Tile(str(ASSET_PATH / "tiles" / 'geyser_iso.png'), "geyser")
             elif target.tile_type == 'fe_mining':
-                new_tile = Tile(str(ASSET_PATH / "tiles" / 'fe_crater_iso.png'), "fe_crater")
+                new_tile = utils.Tile(str(ASSET_PATH / "tiles" / 'fe_crater_iso.png'), "fe_crater")
             else:
-                new_tile = Tile(str(ASSET_PATH / "tiles" / 'land_iso.png'), "land")
+                new_tile = utils.Tile(str(ASSET_PATH / "tiles" / 'land_iso.png'), "land")
 
             # replace tiles
             self.parent.tile_sprite_list.replace(target, new_tile)

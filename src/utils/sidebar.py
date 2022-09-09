@@ -1,11 +1,12 @@
 # build_sidebar.py: controls and display for sidebar for building etc.
+from typing import Dict
 
 import arcade
 import arcade.gui
 
 from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
-                    SCREEN_WIDTH)
-from utils import isometric2rect
+                    SCREEN_WIDTH, TILE_TYPE_BUILD)
+import utils
 
 DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
@@ -41,6 +42,8 @@ class SideBar:
         self.sb_manager: arcade.gui.UIManager = None
 
         self.build_descriptions = None
+
+        self.text: Dict[arcade.Text] = {}
 
     def setup_sidebar(self):
         self.sb_manager = arcade.gui.UIManager()
@@ -267,7 +270,7 @@ class SideBar:
             return
 
         # get tile coords
-        (x, y) = isometric2rect(coords[0], coords[1])
+        (x, y) = utils.isometric2rect(coords[0], coords[1])
         tile_x = int(x / 80)
         tile_y = int(y / 80)
         print('building at:', tile_x, tile_y, self.trybuild)
@@ -297,6 +300,7 @@ class SideBar:
             arcade.draw_lrwh_rectangle_textured(x - 116 / 2, y - 82 / 2, 116, 82,
                                                 self.buildicons_textures[self.trybuild], alpha=100)
 
+    # FIXME: Use arcade.Text instead of arcade.draw_text
     def draw_build_message(self):
         if self.trybuild is not None:
             arcade.draw_text('click to location to build (C to cancel)', self.window_width / 2,
@@ -363,11 +367,20 @@ class SideBar:
 
     # used to display some information about the current tile selected by
     # player from Main View
-    def DisplayTile(self, coords):
+    def update_tile(self, selected_tile: utils.Tile):
         # get tile coords
-        (x, y) = isometric2rect(coords[0], coords[1])
-        tile_x = int(x / 80)  # noqa: F841
-        tile_y = int(y / 80)  # noqa: F841
+        info = f"Screen co-ordinate: {(selected_tile.center_x, selected_tile.center_y)}\n" \
+               f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
+               f"Tile type: {selected_tile.tile_type}"
+
+        if not self.text.get("tile_info"):
+            self.text["tile_info"] = arcade.Text(text=info, start_x=SCREEN_WIDTH - 200, start_y=SCREEN_HEIGHT-20,
+                                                 color=arcade.color.GREEN, multiline=True, width=200)
+        self.text["tile_info"].text = info
+        # (x, y) = selected_tile.center_x, selected_tile.center_y
+        # tile_x = int(x / 80)  # noqa: F841
+        # tile_y = int(y / 80)  # noqa: F841
+
         # TODO: interpret whats here (tilemap?), display message
 
     def draw(self):
@@ -377,3 +390,5 @@ class SideBar:
         self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()
+        for text in self.text.values():
+            text.draw()

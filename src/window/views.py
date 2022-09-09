@@ -350,6 +350,7 @@ class Game(arcade.View):
             if rect:
                 rect = rect[0]
                 self.selected_tile = rect
+                self.sidebar.update_tile(self.selected_tile)
                 selected_tile = arcade.Sprite(str(ASSET_PATH / "sprites_iso" / "select001_iso.png"))
                 selected_tile.center_x = rect.center_x
                 selected_tile.center_y = rect.center_y
@@ -357,7 +358,6 @@ class Game(arcade.View):
                 self.game_scene.add_sprite_list("Selected Tile")
                 self.game_scene.add_sprite("Selected Tile", selected_tile)
 
-            self.sidebar.DisplayTile([actual_x, actual_y])
             self.sidebar.CheckforBuild([actual_x, actual_y])  # also check if trying to build
 
     def on_mouse_release(self, x, y, button, modifiers):
