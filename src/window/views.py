@@ -177,7 +177,10 @@ class Game(arcade.View):
                 tile_type = random.choices(["crater", "fe_crater", "geyser",
                                             "ice", "land", "volcano", ],
                                            [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
-                filename = tile_type + "_iso.png"
+                if tile_type == 'crater':
+                    filename = tile_type + str(random.randint(1,5)) + "_iso.png"
+                else:
+                    filename = tile_type + "_iso.png"
                 tile = Tile(str(ASSET_PATH / "tiles" / filename), tile_type)
                 (tile.isometric_x, tile.isometric_y) = (i, j)
                 (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
