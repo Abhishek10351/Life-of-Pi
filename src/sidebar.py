@@ -3,12 +3,11 @@
 import arcade
 import arcade.gui
 
-from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
-                    SCREEN_WIDTH)
+from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH, DESCR_STRING
 from utils import isometric2rect
 
 DESCR_TEXT_HEIGHT = 240
-RES_TEXT_HEIGHT = 190
+RES_TEXT_HEIGHT = 180
 BUILDTEXTHEIGHT = 35
 
 
@@ -41,17 +40,12 @@ class SideBar:
         self.sb_manager: arcade.gui.UIManager = None
 
         self.build_descriptions = None
-        
-        self.res_text = arcade.Text('Energy: Iron(Fe): H2O: CO2: C: H: O2: Polymers: Food: Crew',
-            SCREEN_WIDTH - 290,RES_TEXT_HEIGHT,color=arcade.color.GREEN,width=10,font_size=10,
-            multiline=True,align='left')
 
     def setup_sidebar(self):
         self.sb_manager = arcade.gui.UIManager()
         self.sb_manager.enable()
 
         # Descriptions
-
         self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members\n",
                                    'garden': "Garden Pod: provide food for crew\n",
                                    'solar': "Solar Generator: \ngenerates energy\n",
@@ -64,8 +58,7 @@ class SideBar:
                                    'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
-                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
-                                                       "\nin-coming asteroids\n",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids\n",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n"}
         for key in self.build_descriptions.keys():
             self.build_descriptions[key] += DESCR_STRING[key]
@@ -316,11 +309,6 @@ class SideBar:
     def draw_res_disp(self):
         if self.res_view == 0:
             return
-        
-        self.res_text.draw()
-        #return
-        
-        """
         text_lines = [
             'Energy:',
             'Iron (Fe):',
@@ -337,11 +325,10 @@ class SideBar:
             h = RES_TEXT_HEIGHT - 15 * i
             arcade.draw_text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN, font_size=12,
                              anchor_x="right", anchor_y="center")
-        """
         keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food', 'Crew']
-        
+
         for (i, key) in enumerate(keys):
-            h = RES_TEXT_HEIGHT - 16 * i + 5
+            h = RES_TEXT_HEIGHT - 15 * i
             have = self.parent.ressource_manager.current_ressource[key]
             max_cap = self.parent.ressource_manager.maximum_ressource[key]
             line = '(%d / %d)' % (have, max_cap)
@@ -361,13 +348,13 @@ class SideBar:
                     line += 'batteries'
                 elif key in ['Crew']:
                     line += 'bases'
-            arcade.draw_text(line, SCREEN_WIDTH - 220, h, text_col, font_size=11,
+            arcade.draw_text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
                              anchor_x="left", anchor_y="center")
 
     def draw_time_left(self):
         arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
                          (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
-
+    
     # used to display some information about the current tile selected by
     # player from Main View
     def DisplayTile(self, coords):

@@ -397,7 +397,8 @@ class Game(arcade.View):
         self.center_camera_to_camera()
 
         self.disasters.update()
-        self.sidebar.update()
+        if self.tic % 10 == 0:
+            self.sidebar.update()
         self.update_sprite_animations()
 
         self.ressource_manager.update()
