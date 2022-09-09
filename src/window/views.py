@@ -146,6 +146,8 @@ class Game(arcade.View):
         self.debugging_console_tex_inp = None
         self.debugging_console_tex_out = None
         self.debugging_console_tex = None
+        
+        self.tic = 0
 
     def on_show_view(self):
         """Called when the current is switched to this view."""
@@ -202,6 +204,7 @@ class Game(arcade.View):
 
         self.sidebar.setup_sidebar()
         self.disasters.setup()
+        self.tic = 0
 
     def try_to_build(self, build_type):
         build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
@@ -380,7 +383,13 @@ class Game(arcade.View):
                 self.disasters.new_dust_storm()
             elif rand == 1:
                 self.disasters.new_asteroid_strike()
-
+    
+    def update_sprite_animations(self):
+        if self.tic % 30 == 0:
+            for tile in self.tile_sprite_list:
+                if tile.tile_type == 'geo':
+                    tile.update_frame()
+    
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()
@@ -389,11 +398,13 @@ class Game(arcade.View):
 
         self.disasters.update()
         self.sidebar.update()
+        self.update_sprite_animations()
 
         self.ressource_manager.update()
         self.generate_disaster()
 
         self.check_win_loose()
+        self.tic += 1
 
 
 class WinLooseMenu(arcade.View):
