@@ -58,16 +58,16 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'Crew': 1}
 
 # Initial storage without improvement
-INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 1000,
-                                      'CO2': 1000,
-                                      'C': 1000,
-                                      'H': 1000,
-                                      'O2': 1000,
-                                      'Fe': 1000,
-                                      'Poly': 1000,
-                                      'Ener': 1000,
+INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
+                                      'CO2': 100,
+                                      'C': 100,
+                                      'H': 100,
+                                      'O2': 100,
+                                      'Fe': 100,
+                                      'Poly': 100,
+                                      'Ener': 100,
                                       'Money': 100000,
-                                      'Food': 1000,
+                                      'Food': 100,
                                       'Crew': 1}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
