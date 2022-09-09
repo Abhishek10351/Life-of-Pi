@@ -97,6 +97,7 @@ class RessourceManager:
         self.tank = 0
         self.ener_tank = 0
         self.bases = 0
+        self.rocket = 0
 
         self.asteroid_defence = 0
         self.stormshield = 0
@@ -131,7 +132,7 @@ class RessourceManager:
             for building in self.possible_tile_type[target.tile_type]:
                 setattr(self, building, getattr(self, building) - 1)
 
-    def check_for_resource(self, resource_to_build) -> bool:
+    def check_for_resource(self, resource_to_build, build_type) -> bool:
         for key, item in resource_to_build.items():
             if self.current_ressource[key] < item:
                 return False

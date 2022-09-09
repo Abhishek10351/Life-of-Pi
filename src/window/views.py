@@ -1,5 +1,6 @@
 import datetime
 import random
+from re import S
 import time
 
 import arcade
@@ -187,7 +188,12 @@ class Game(arcade.View):
                 (tile.isometric_x, tile.isometric_y) = (i, j)
                 (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
                 self.tile_sprite_list.append(tile)
-        print(len(self.tile_sprite_list))
+        #Select a random crater tile and set it's tile_type to easter_crater
+        i = random.randint(0, len(self.tile_sprite_list) - 1)
+        while self.tile_sprite_list[i].tile_type != 'crater':
+            i = random.randint(0, len(self.tile_sprite_list) - 1)
+        self.tile_sprite_list[i].tile_type = 'easter_crater'
+        
         # self.game_scene.add_sprite_list("Tiles", self.tile_sprite_list)
         self.game_scene.add_sprite_list("Selected Tile")
 
@@ -219,10 +225,13 @@ class Game(arcade.View):
                                    "geo": "geotherm001_iso.png",
                                    "factory_poly": "factory_poly_iso.png",
                                    "asteroid_defence": "asteroid_defence_iso.png",
-                                   "stormshield": "stormshield_iso.png", }
+                                   "stormshield": "stormshield_iso.png",
+                                   "rocket": "rocket_iso.png"}
         if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
-                and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
+                and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type], build_type):
             prev_tile = self.selected_tile
+            if self.selected_tile.tile_type == 'easter_crater':
+                self.ressource_manager.current_ressource['Fe'] += 1000
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
                                       build_type)
             self.tile_sprite_list.replace(prev_tile, self.selected_tile)
@@ -368,10 +377,9 @@ class Game(arcade.View):
 
     def check_win_loose(self):
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
-            print(self.ressource_manager.current_ressource)
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
             self.main_window.show_view(winloose)
-        if self.time_delta > PARTY_TIME:
+        if self.time_delta > PARTY_TIME or self.ressource_manager.rocket > 0:
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
 
@@ -397,7 +405,8 @@ class Game(arcade.View):
         self.center_camera_to_camera()
 
         self.disasters.update()
-        self.sidebar.update()
+        if self.tic % 10 == 0:
+            self.sidebar.update()
         self.update_sprite_animations()
 
         self.ressource_manager.update()
