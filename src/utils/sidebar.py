@@ -333,8 +333,11 @@ class SideBar:
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
-            arcade.draw_text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN, font_size=12,
-                             anchor_x="right", anchor_y="center")
+            if not self.text.get(f"res_display_{line}_{i}"):
+                self.text[f"res_display_{line}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN,
+                                                                   font_size=12, anchor_x="right", anchor_y="center")
+            self.text[f"res_display_{line}_{i}"].text = line
+
         keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food', 'Crew']
 
         for (i, key) in enumerate(keys):
@@ -358,12 +361,17 @@ class SideBar:
                     line += 'batteries'
                 elif key in ['Crew']:
                     line += 'bases'
-            arcade.draw_text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
-                             anchor_x="left", anchor_y="center")
+            if not self.text.get(f"res_display_{key}_{i}"):
+                self.text[f"res_display_{key}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
+                                                                  anchor_x="left", anchor_y="center")
+            self.text[f"res_display_{key}_{i}"].text = line
 
     def draw_time_left(self):
-        arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
-                         (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
+        info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
+        if not self.text.get("time_left"):
+            self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
+                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN, multiline=True)
+        self.text["time_left"].text = info
 
     # used to display some information about the current tile selected by
     # player from Main View
@@ -374,7 +382,7 @@ class SideBar:
                f"Tile type: {selected_tile.tile_type}"
 
         if not self.text.get("tile_info"):
-            self.text["tile_info"] = arcade.Text(text=info, start_x=SCREEN_WIDTH - 200, start_y=SCREEN_HEIGHT-20,
+            self.text["tile_info"] = arcade.Text(text=info, start_x=SCREEN_WIDTH - 200, start_y=SCREEN_HEIGHT - 20,
                                                  color=arcade.color.GREEN, multiline=True, width=200)
         self.text["tile_info"].text = info
         # (x, y) = selected_tile.center_x, selected_tile.center_y
