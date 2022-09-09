@@ -58,16 +58,16 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'Crew': 1}
 
 # Initial storage without improvement
-INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
-                                      'CO2': 100,
-                                      'C': 100,
-                                      'H': 100,
-                                      'O2': 100,
-                                      'Fe': 100,
-                                      'Poly': 100,
-                                      'Ener': 100,
+INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
+                                      'CO2': 150,
+                                      'C': 150,
+                                      'H': 150,
+                                      'O2': 150,
+                                      'Fe': 150,
+                                      'Poly': 150,
+                                      'Ener': 150,
                                       'Money': 100000,
-                                      'Food': 100,
+                                      'Food': 150,
                                       'Crew': 1}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
@@ -188,6 +188,7 @@ O2_CONSUMPTION_PER_CREW = 0.5 / 60
 # Tile build dict
 
 TILE_TYPE_BUILD = {"crater": (),
+                   "easter_crater": "fe_mining",
                    "fe_crater": "fe_mining",
                    "geyser": "co2extract",
                    "ice": "iceextract",

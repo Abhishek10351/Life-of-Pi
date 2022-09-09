@@ -187,7 +187,12 @@ class Game(arcade.View):
                 (tile.isometric_x, tile.isometric_y) = (i, j)
                 (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
                 self.tile_sprite_list.append(tile)
-        print(len(self.tile_sprite_list))
+        #Select a random crater tile and set it's tile_type to easter_crater
+        i = random.randint(0, len(self.tile_sprite_list) - 1)
+        while self.tile_sprite_list[i].tile_type != 'crater':
+            i = random.randint(0, len(self.tile_sprite_list) - 1)
+        self.tile_sprite_list[i].tile_type = 'easter_crater'
+        
         # self.game_scene.add_sprite_list("Tiles", self.tile_sprite_list)
         self.game_scene.add_sprite_list("Selected Tile")
 
@@ -223,6 +228,8 @@ class Game(arcade.View):
         if self.selected_tile.check_build(build_type, self.tile_sprite_list.get_neighbours(self.selected_tile)) \
                 and self.ressource_manager.check_for_resource(RESSOURCE_TO_BUILD[build_type]):
             prev_tile = self.selected_tile
+            if self.selected_tile.tile_type == 'easter_crater':
+                self.ressource_manager.current_ressource['Fe'] += 1000
             self.selected_tile = Tile(str(ASSET_PATH / "sprites_iso" / build_type_to_file_name[build_type]),
                                       build_type)
             self.tile_sprite_list.replace(prev_tile, self.selected_tile)
