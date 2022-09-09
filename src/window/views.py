@@ -1,6 +1,5 @@
 import datetime
 import random
-from re import S
 import time
 
 import arcade
@@ -17,6 +16,10 @@ from disasters import Disasters
 from ressource_manager import RessourceManager
 from sidebar import SideBar
 from utils import Tile, TileList, rect2isometric
+
+# from re import S
+
+
 
 arcade.load_font(str(ASSET_PATH / "fonts" / "Dilo World.ttf"))
 
@@ -147,7 +150,7 @@ class Game(arcade.View):
         self.debugging_console_tex_inp = None
         self.debugging_console_tex_out = None
         self.debugging_console_tex = None
-        
+
         self.tic = 0
 
     def on_show_view(self):
@@ -181,19 +184,19 @@ class Game(arcade.View):
                                             "ice", "land", "volcano", ],
                                            [CRATER, IRON_RICH_TILE, CARBON_DIOXIDE_GEYSERS, ICY_TILE, LAND, VOLCANO])[0]
                 if tile_type == 'crater':
-                    filename = tile_type + str(random.randint(1,5)) + "_iso.png"
+                    filename = tile_type + str(random.randint(1, 5)) + "_iso.png"
                 else:
                     filename = tile_type + "_iso.png"
                 tile = Tile(str(ASSET_PATH / "tiles" / filename), tile_type)
                 (tile.isometric_x, tile.isometric_y) = (i, j)
                 (tile.center_x, tile.center_y) = rect2isometric(80 * i + 40, 80 * j + 40)
                 self.tile_sprite_list.append(tile)
-        #Select a random crater tile and set it's tile_type to easter_crater
+        # Select a random crater tile and set it's tile_type to easter_crater
         i = random.randint(0, len(self.tile_sprite_list) - 1)
         while self.tile_sprite_list[i].tile_type != 'crater':
             i = random.randint(0, len(self.tile_sprite_list) - 1)
         self.tile_sprite_list[i].tile_type = 'easter_crater'
-        
+
         # self.game_scene.add_sprite_list("Tiles", self.tile_sprite_list)
         self.game_scene.add_sprite_list("Selected Tile")
 
@@ -391,13 +394,14 @@ class Game(arcade.View):
                 self.disasters.new_dust_storm()
             elif rand == 1:
                 self.disasters.new_asteroid_strike()
-    
+
     def update_sprite_animations(self):
         if self.tic % 30 == 0:
             for tile in self.tile_sprite_list:
+                tile: Tile
                 if tile.tile_type == 'geo':
                     tile.update_frame()
-    
+
     def on_update(self, delta_time):
         """Movement and game logic"""
         self.physics_engine.update()

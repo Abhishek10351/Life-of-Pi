@@ -4,7 +4,7 @@ from typing import List
 
 import arcade
 
-from config import TILE_TYPE_BUILD, ASSET_PATH
+from config import ASSET_PATH, TILE_TYPE_BUILD
 
 
 def rect2isometric(x, y):
@@ -31,7 +31,7 @@ class Tile(arcade.Sprite):
         self.tile_type = tile_type
         self.isometric_x = 0
         self.isometric_y = 0
-        
+
         if self.tile_type == 'geo':
             self.frame_textures = [
                 arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "geotherm001_iso.png")),
@@ -40,13 +40,13 @@ class Tile(arcade.Sprite):
                 arcade.load_texture(str(ASSET_PATH / "sprites_iso" / "geotherm004_iso.png"))
             ]
             self.frame_ind = 0
-    
+
     def update_frame(self):
         self.frame_ind += 1
         if self.frame_ind == 4:
             self.frame_ind = 0
         self.texture = self.frame_textures[self.frame_ind]
-    
+
     def check_build(self, build_type: str, lst_neighbours):
         if build_type in TILE_TYPE_BUILD[self.tile_type]:
             return True
@@ -80,7 +80,7 @@ class TileList(arcade.SpriteList):
 
     def get_all_tile_type(self):
         return [obj.tile_type for obj in self]
- 
+
     def replace(self, sprite: Tile, other: Tile):
         """Replaces tile."""
         other.isometric_x = sprite.isometric_x
