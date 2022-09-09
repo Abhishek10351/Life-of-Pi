@@ -82,7 +82,7 @@ class TileList(arcade.SpriteList):
 
     def get_all_tile_type(self):
         return [obj.tile_type for obj in self]
-
+ 
     def replace(self, sprite: Tile, other: Tile):
         """Replaces tile."""
         other.isometric_x = sprite.isometric_x
