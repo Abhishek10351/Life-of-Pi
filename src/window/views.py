@@ -9,10 +9,9 @@ from scipy import interpolate
 
 from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
-                    DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
-                    IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO,
-                    SCREEN_WIDTH, SCREEN_HEIGHT)
+                    DAY_TOTAL_TIME, ICY_TILE, INVERT_MOUSE, IRON_RICH_TILE,
+                    LAND, MAP_SIZE_X, MAP_SIZE_Y, RESSOURCE_TO_BUILD,
+                    SCREEN_HEIGHT, SCREEN_WIDTH, STYLE_GOLDEN_TANOI, VOLCANO)
 from utils import (Disasters, RessourceManager, SideBar, Tile, TileList,
                    rect2isometric)
 
@@ -119,6 +118,7 @@ class Game(arcade.View):
 
     def __init__(self, main_window: arcade.Window):
         super().__init__(main_window)
+        self.launchtime = None
         self.main_window = main_window
 
         self.game_scene: arcade.Scene = None
@@ -129,7 +129,7 @@ class Game(arcade.View):
         self.camera: arcade.Camera = None
 
         self.light_layer = None
-        self.time = time.time() # update to start in day light
+        self.time = time.time()  # update to start in day light
         self.time_delta = 0
 
         self.ressource_manager = RessourceManager()
@@ -150,7 +150,7 @@ class Game(arcade.View):
         self.debugging_console_tex_inp = None
         self.debugging_console_tex_out = None
         self.debugging_console_tex = None
-        
+
         self.init_win_delta_time = None
         self.win_delta_time = None
 
@@ -206,20 +206,20 @@ class Game(arcade.View):
         self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
         self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
-        #self.camera_sprite.center_x = 400
-        #self.camera_sprite.center_y = 300
+        # self.camera_sprite.center_x = 400
+        # self.camera_sprite.center_y = 300
         self.camera_sprite.center_x = 0
         self.camera_sprite.center_y = 0
         self.game_scene.add_sprite("Camera", self.camera_sprite)
 
-        #self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
+        # self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
 
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
 
         self.sidebar.setup_sidebar()
         self.disasters.setup()
         self.tic = 0
-        self.launchtime = 11*60
+        self.launchtime = 11 * 60
 
     def try_to_build(self, build_type):
         build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
@@ -388,7 +388,7 @@ class Game(arcade.View):
     def check_win_loose(self):
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
-            self.main_window.show_view(winloose) # TODO
+            self.main_window.show_view(winloose)  # TODO
         """if self.time_delta > PARTY_TIME or self.ressource_manager.rocket > 0:
             winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)"""
@@ -399,18 +399,19 @@ class Game(arcade.View):
     def generate_disaster(self):
         """Randomly generate disasters"""
         time_diff_since_last = self.time_delta - self.disasters.last_disaster_time
-        #print(self.time_delta, time_diff_since_last, self.ressource_manager.current_ressource['Poly'])
-        if self.time_delta < 60: # give player a break in first 60 s
+        # print(self.time_delta, time_diff_since_last, self.ressource_manager.current_ressource['Poly'])
+        if self.time_delta < 60:  # give player a break in first 60 s
             pass
-        elif self.ressource_manager.current_ressource['Poly'] < 10 and time_diff_since_last > 45: # go easy, no poly
-            #rand = random.randint(0, 1 / DISASTER_PROBA)
+        elif self.ressource_manager.current_ressource['Poly'] < 10 and time_diff_since_last > 45:  # go easy, no poly
+            # rand = random.randint(0, 1 / DISASTER_PROBA)
             rand = random.randint(0, 1)
             if rand == 0:
                 self.disasters.new_dust_storm(self.time_delta)
             elif rand == 1:
                 self.disasters.new_asteroid_strike(self.time_delta)
-        elif self.ressource_manager.current_ressource['Poly'] > 10 and time_diff_since_last > 20: # player has poly, get em!
-            #rand = random.randint(0, 1 / DISASTER_PROBA)
+        elif self.ressource_manager.current_ressource['Poly'] > 10 \
+                and time_diff_since_last > 20:  # player has poly, get em!
+            # rand = random.randint(0, 1 / DISASTER_PROBA)
             rand = random.randint(0, 1)
             if rand == 0:
                 self.disasters.new_dust_storm(self.time_delta)
@@ -426,7 +427,7 @@ class Game(arcade.View):
 
     def on_update(self, delta_time):
         """Movement and game logic"""
-        #self.physics_engine.update()
+        # self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
 
@@ -437,10 +438,10 @@ class Game(arcade.View):
 
         self.ressource_manager.update()
         self.generate_disaster()
-        
+
         if self.ressource_manager.rocket > 0:
             self.launchtime -= 1
-        
+
         self.check_win_loose()
         self.tic += 1
 
@@ -461,7 +462,7 @@ class WinLooseMenu(arcade.View):
         self.manager = None
 
         self.win_loose_message = win_loose
-        
+
         self.background = arcade.load_texture(str(ASSET_PATH / "titles" / "victory_background.png"))
 
     def on_show_view(self) -> None:

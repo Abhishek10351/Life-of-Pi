@@ -99,7 +99,7 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
                                       'Money': 100000,
                                       'Food': 150,
                                       'Crew': 1}
-                                      
+
 """
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_ice_generator': 3 / 60,
@@ -148,7 +148,6 @@ BUILDING_LIST = ['h2o_liquid_generator',
                  'stormshield',
                  'rocket']
 
-"""
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'h2o_ice_generator': 1,
                           'h2o_vapor_generator': 3,
@@ -167,6 +166,7 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'stormshield': 5,
                           'rocket': 100}
 
+"""
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'h2o_ice_generator': 1,
                           'h2o_vapor_generator': 3,
@@ -184,7 +184,8 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'asteroid_defence': 5,
                           'stormshield': 5,
                           'rocket': 40}
-                          
+"""
+
 ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'h2o_ice_generator': 1 / 60,
                      'h2o_vapor_generator': 5 / 60,
@@ -197,7 +198,7 @@ ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'bases': 1 / 60,
                      'asteroid_defence': 2 / 60,
                      'stormshield': 2 / 60}
-"""
+
 RESSOURCE_TO_BUILD = {
     'base': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['bases']},
     'garden': {'H2O': 30, 'CO2': 10, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['garden']},
@@ -224,7 +225,7 @@ RESSOURCE_TO_BUILD = {
     'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
                     'Crew': CREW_MEMBER_TO_OPERATE['stormshield']},
     'rocket': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 1000, 'Poly': 1000,
-                    'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
+               'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
 """
 RESSOURCE_TO_BUILD = {
     'base': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['bases']},
@@ -253,6 +254,7 @@ RESSOURCE_TO_BUILD = {
                     'Crew': CREW_MEMBER_TO_OPERATE['stormshield']},
     'rocket': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 500, 'Poly': 400,
                     'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
+"""
 
 # Generate doc string for every building
 DESCR_STRING = {}
@@ -278,9 +280,8 @@ BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME /
                    DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
 BRIGHTNESS_VALUE = [0.7, 1, 0.6, 0.3, 0.25, 0.25, 0.4]
 
-#O2_CONSUMPTION_PER_CREW = 0.5 / 60
+# O2_CONSUMPTION_PER_CREW = 0.5 / 60
 O2_CONSUMPTION_PER_CREW = 0.05 / 60
-
 
 # Tile build dict
 
@@ -295,7 +296,7 @@ TILE_TYPE_BUILD = {"crater": (),
 
 FOOD_CONSUMPTION_PER_MEMBER_CREW = 0.33 / 60
 CREW_PER_BASES = 5
-#Time to win when the rocket is build
+# Time to win when the rocket is build
 PARTY_TIME = 60
 
 DISASTER_PER_MINIT = 1
