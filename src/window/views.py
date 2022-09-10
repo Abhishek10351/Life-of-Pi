@@ -146,6 +146,9 @@ class Game(arcade.View):
         self.debugging_console_tex_inp = None
         self.debugging_console_tex_out = None
         self.debugging_console_tex = None
+        
+        self.init_win_delta_time = None
+        self.win_delta_time = None
 
         self.tic = 0
 
@@ -378,13 +381,20 @@ class Game(arcade.View):
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
             self.main_window.show_view(winloose)
-        if self.time_delta > PARTY_TIME or self.ressource_manager.rocket > 0:
-            winloose = WinLooseMenu(self.main_window, 'You Win !')
-            self.main_window.show_view(winloose)
+        if self.ressource_manager.rocket > 0:
+            if self.init_win_delta_time is None:
+                self.init_win_delta_time = self.time = time.time()
+            self.win_delta_time = datetime.timedelta(seconds=time.time() - self.init_win_delta_time).total_seconds()
+            if self.win_delta_time > 60:
+                winloose = WinLooseMenu(self.main_window, 'You Win !')
+                self.main_window.show_view(winloose)
+        else:
+            self.init_win_delta_time = None
+            
 
     def generate_disaster(self):
         """Randomly generate disasters"""
-        if self.time_delta > 60:
+        if self.time_delta > 180:
             rand = random.randint(0, 1 / DISASTER_PROBA)
             if rand == 0:
                 self.disasters.new_dust_storm()

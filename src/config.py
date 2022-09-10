@@ -45,29 +45,29 @@ INVERT_MOUSE = True
 # Initial ressource
 
 RESSOURCES_LIST = ['H2O', 'CO2', 'C', 'H', 'O2', 'Fe', 'Poly', 'Ener', 'Money', 'Food']
-INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
-                              'CO2': 100,
-                              'C': 100,
-                              'H': 100,
-                              'O2': 100,
-                              'Fe': 100,
+INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 50,
+                              'CO2': 50,
+                              'C': 50,
+                              'H': 50,
+                              'O2': 150,
+                              'Fe': 150,
                               'Poly': 0,
                               'Ener': 100,
                               'Money': 0,
-                              'Food': 100,
+                              'Food': 150,
                               'Crew': 1}
 
 # Initial storage without improvement
-INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
-                                      'CO2': 150,
-                                      'C': 150,
-                                      'H': 150,
-                                      'O2': 150,
-                                      'Fe': 150,
-                                      'Poly': 150,
-                                      'Ener': 150,
+INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 200,
+                                      'CO2': 200,
+                                      'C': 100,
+                                      'H': 100,
+                                      'O2': 200,
+                                      'Fe': 200,
+                                      'Poly': 100,
+                                      'Ener': 200,
                                       'Money': 100000,
-                                      'Food': 150,
+                                      'Food': 200,
                                       'Crew': 1}
 
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
@@ -78,8 +78,8 @@ RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'co2_breaker_factory': 2 / 60,
                         'h2o_breaker_factory': 2 / 60,
                         'poly_factory': 0.5 / 60,
-                        'solar_pannel': 2 / 60,
-                        'geothermal_generator': 5 / 60,
+                        'solar_pannel': 4 / 60,
+                        'geothermal_generator': 6 / 60,
                         'garden': 2 / 60}
 
 TANK_STORAGE = {'tank': 100,
@@ -120,7 +120,7 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'bases': 0,
                           'asteroid_defence': 5,
                           'stormshield': 5,
-                          'rocket': 50}
+                          'rocket': 100}
 
 ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'h2o_ice_generator': 1 / 60,
@@ -187,7 +187,7 @@ BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME /
                    DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
 BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
 
-O2_CONSUMPTION_PER_CREW = 0.5 / 60
+O2_CONSUMPTION_PER_CREW = 0.25 / 60
 
 # Tile build dict
 
@@ -200,9 +200,10 @@ TILE_TYPE_BUILD = {"crater": (),
                    "volcano": "geo"
                    }
 
-FOOD_CONSUMPTION_PER_MEMBER_CREW = 1 / 60
+FOOD_CONSUMPTION_PER_MEMBER_CREW = 0.25 / 60
 CREW_PER_BASES = 5
-PARTY_TIME = 600
+#Time to win when the rocket is build
+PARTY_TIME = 60
 
 DISASTER_PER_MINIT = 1
 DISASTER_PROBA = 1 / 3600
