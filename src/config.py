@@ -8,6 +8,8 @@ SCREEN_TITLE = "Marrrs Explorer"
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 
+MUSIC_VOLUME = 0.5
+
 # Map size
 MAP_SIZE_X = 10
 MAP_SIZE_Y = 10

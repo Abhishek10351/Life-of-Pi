@@ -79,7 +79,7 @@ class SoundCues:
             ticks_left = -(self.ressource_manager.current_ressource['Food']/self.rate_res['Food'])
             if ticks_left < WARN_PREDICT_TICKS:
                 food_rate_warn = True
-                print('Food rate',self.rate_res['Food'],ticks_left)
+                #print('Food rate',self.rate_res['Food'],ticks_left)
         
         oxygen = self.ressource_manager.current_ressource['O2']
         food = self.ressource_manager.current_ressource['Food']
