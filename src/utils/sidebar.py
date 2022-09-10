@@ -65,8 +65,8 @@ class SideBar:
                                    'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources\n",
                                    'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers\n",
                                    'fe_mining': "Fe/Iron Mining Operation: \ncollects Fe from crater deposits\n",
-                                   'factory_co2': "CO Factory: generate C and O \nfrom CO2\n",
-                                   'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
+                                   'factory_co2': "CO Factory: generate C and O2 \nfrom CO2\n",
+                                   'factory_h2o': "HO Factory: generate H and O2 \nfrom H2O\n",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
                                    'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
@@ -338,7 +338,7 @@ class SideBar:
             'O2:',
             'Polymers:',
             'Food:',
-            'Crew'
+            'Crew:'
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
@@ -376,11 +376,12 @@ class SideBar:
             self.text[f"res_display_{key}_{i}"].text = line
 
     def draw_time_left(self):
-        info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
-        if not self.text.get("time_left"):
-            self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
-                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
-        self.text["time_left"].text = info
+        if self.parent.init_win_delta_time is not None:
+            info = 'Time before win : %i s' % round(PARTY_TIME - self.parent.win_delta_time)
+            if not self.text.get("time_left"):
+                self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
+                                                    start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
+            self.text["time_left"].text = info
 
     # used to display some information about the current tile selected by
     # player from Main View
