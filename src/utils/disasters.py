@@ -248,7 +248,8 @@ class AsteroidStrike:
                 arcade.play_sound(self.explode_sound)
                 targets = self.parent.find_buildings_in_range(self.pos_x, self.pos_y, r=ASTEROID_BLAST_RADIUS)
                 if len(targets) > 0:
-                    self.parent.destroy_buildings(targets)
+                    ind = random.randint(0, len(targets) - 1) # update to just destroy one building
+                    self.parent.destroy_buildings([targets[ind]])
             self.active = False
             self.lasers_in_range = []
             return
@@ -344,6 +345,7 @@ class Disasters:
         self.warnings = []
         self.destroyed_locs = DestroyedLocs()
         self.tic = 0
+        self.last_disaster_time = 0
 
     def find_buildings_in_range(self, x, y, r=None):
 
@@ -383,13 +385,15 @@ class Disasters:
             # track for GUI display
             self.destroyed_locs.add(target.center_x, target.center_y)
 
-    def new_dust_storm(self):
-        if not self.dust_storm.active:
+    def new_dust_storm(self, time):
+        if not self.dust_storm.active and not self.asteroid_strike.active:
             self.dust_storm.start()
+            self.last_disaster_time = time
 
-    def new_asteroid_strike(self):
-        if not self.asteroid_strike.active:
+    def new_asteroid_strike(self, time):
+        if not self.asteroid_strike.active and not self.dust_storm.active:
             self.asteroid_strike.start()
+            self.last_disaster_time = time
 
     def update(self):
         self.tic += 1

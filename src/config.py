@@ -4,7 +4,7 @@ import pathlib
 from arcade import color
 
 # Dimensions and title
-SCREEN_TITLE = "Marrrs Explorer"
+SCREEN_TITLE = "Mission Cobra-2"
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 
@@ -47,6 +47,7 @@ INVERT_MOUSE = True
 # Initial ressource
 
 RESSOURCES_LIST = ['H2O', 'CO2', 'C', 'H', 'O2', 'Fe', 'Poly', 'Ener', 'Money', 'Food']
+"""
 INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'CO2': 100,
                               'C': 100,
@@ -58,8 +59,21 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'Money': 0,
                               'Food': 100,
                               'Crew': 1}
+"""
+INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 0,
+                              'CO2': 0,
+                              'C': 0,
+                              'H': 0,
+                              'O2': 500,
+                              'Fe': 0,
+                              'Poly': 0,
+                              'Ener': 100,
+                              'Money': 0,
+                              'Food': 100,
+                              'Crew': 0}
 
 # Initial storage without improvement
+"""
 INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
                                       'CO2': 150,
                                       'C': 150,
@@ -71,7 +85,20 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
                                       'Money': 100000,
                                       'Food': 150,
                                       'Crew': 1}
-
+"""
+INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
+                                      'CO2': 150,
+                                      'C': 150,
+                                      'H': 150,
+                                      'O2': 500,
+                                      'Fe': 150,
+                                      'Poly': 150,
+                                      'Ener': 150,
+                                      'Money': 100000,
+                                      'Food': 150,
+                                      'Crew': 1}
+                                      
+"""
 RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'h2o_ice_generator': 3 / 60,
                         'h2o_vapor_generator': 3 / 60,
@@ -80,6 +107,19 @@ RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'co2_breaker_factory': 2 / 60,
                         'h2o_breaker_factory': 2 / 60,
                         'poly_factory': 0.5 / 60,
+                        'solar_pannel': 2 / 60,
+                        'geothermal_generator': 5 / 60,
+                        'garden': 2 / 60}
+"""
+
+RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
+                        'h2o_ice_generator': 3 / 60,
+                        'h2o_vapor_generator': 3 / 60,
+                        'co2_generator': 3 / 60,
+                        'fe_generator': 3 / 60,
+                        'co2_breaker_factory': 2 / 60,
+                        'h2o_breaker_factory': 2 / 60,
+                        'poly_factory': 2 / 60,
                         'solar_pannel': 2 / 60,
                         'geothermal_generator': 5 / 60,
                         'garden': 2 / 60}
@@ -106,6 +146,7 @@ BUILDING_LIST = ['h2o_liquid_generator',
                  'stormshield',
                  'rocket']
 
+"""
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'h2o_ice_generator': 1,
                           'h2o_vapor_generator': 3,
@@ -123,7 +164,26 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'asteroid_defence': 5,
                           'stormshield': 5,
                           'rocket': 50}
+"""
 
+CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
+                          'h2o_ice_generator': 1,
+                          'h2o_vapor_generator': 3,
+                          'co2_generator': 2,
+                          'fe_generator': 3,
+                          'co2_breaker_factory': 2,
+                          'h2o_breaker_factory': 2,
+                          'poly_factory': 3,
+                          'solar_pannel': 1,
+                          'geothermal_generator': 5,
+                          'garden': 1,
+                          'tank': 1,
+                          'ener_tank': 1,
+                          'bases': 0,
+                          'asteroid_defence': 5,
+                          'stormshield': 5,
+                          'rocket': 40}
+                          
 ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'h2o_ice_generator': 1 / 60,
                      'h2o_vapor_generator': 5 / 60,
@@ -136,7 +196,7 @@ ENER_PER_BUILDING = {'h2o_liquid_generator': 2 / 60,
                      'bases': 1 / 60,
                      'asteroid_defence': 2 / 60,
                      'stormshield': 2 / 60}
-
+"""
 RESSOURCE_TO_BUILD = {
     'base': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['bases']},
     'garden': {'H2O': 30, 'CO2': 10, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['garden']},
@@ -164,13 +224,41 @@ RESSOURCE_TO_BUILD = {
                     'Crew': CREW_MEMBER_TO_OPERATE['stormshield']},
     'rocket': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 1000, 'Poly': 1000,
                     'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
+"""
+RESSOURCE_TO_BUILD = {
+    'base': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['bases']},
+    'garden': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['garden']},
+    'solar': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0,
+              'Crew': CREW_MEMBER_TO_OPERATE['solar_pannel']},
+    'geo': {'H2O': 30, 'CO2': 10, 'H': 10, 'C': 20, 'Fe': 30, 'Poly': 0,
+            'Crew': CREW_MEMBER_TO_OPERATE['geothermal_generator']},
+    'battery': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 10, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['ener_tank']},
+    'iceextract': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0,
+                   'Crew': CREW_MEMBER_TO_OPERATE['h2o_ice_generator']},
+    'co2extract': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0,
+                   'Crew': CREW_MEMBER_TO_OPERATE['co2_generator']},
+    'fe_mining': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 0, 'Poly': 0,
+                  'Crew': CREW_MEMBER_TO_OPERATE['fe_generator']},
+    'factory_co2': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0,
+                    'Crew': CREW_MEMBER_TO_OPERATE['co2_breaker_factory']},
+    'factory_h2o': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 0,
+                    'Crew': CREW_MEMBER_TO_OPERATE['h2o_breaker_factory']},
+    'factory_poly': {'H2O': 10, 'CO2': 10, 'H': 10, 'C': 20, 'Fe': 30, 'Poly': 0,
+                     'Crew': CREW_MEMBER_TO_OPERATE['poly_factory']},
+    'tank': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 10, 'Poly': 0, 'Crew': CREW_MEMBER_TO_OPERATE['tank']},
+    'asteroid_defence': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
+                         'Crew': CREW_MEMBER_TO_OPERATE['asteroid_defence']},
+    'stormshield': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 20, 'Poly': 10,
+                    'Crew': CREW_MEMBER_TO_OPERATE['stormshield']},
+    'rocket': {'H2O': 0, 'CO2': 0, 'H': 0, 'C': 0, 'Fe': 500, 'Poly': 400,
+                    'Total_crew': CREW_MEMBER_TO_OPERATE['rocket']}}
 
 # Generate doc string for every building
 DESCR_STRING = {}
 for key, item in RESSOURCE_TO_BUILD.items():
     DESCR_STRING[key] = ''
     for key2, item2 in item.items():
-        if item2 != 0:
+        if item2 > 0:
             DESCR_STRING[key] += '%s : %i\n' % (key2, item2)
 
 # Resource density
@@ -187,9 +275,10 @@ LAND = 100 - (IRON_RICH_TILE + VOLCANO + CARBON_DIOXIDE_GEYSERS + ICY_TILE + CRA
 DAY_TOTAL_TIME = 240
 BRIGHTNESS_TIME = [0, DAY_TOTAL_TIME / 5.6, DAY_TOTAL_TIME / 4, DAY_TOTAL_TIME / 2,
                    DAY_TOTAL_TIME / 1.4, DAY_TOTAL_TIME / 1.3, DAY_TOTAL_TIME]
-BRIGHTNESS_VALUE = [0.25, 0.4, 0.7, 1, 0.6, 0.3, 0.25]
+BRIGHTNESS_VALUE = [0.7, 1, 0.6, 0.3, 0.25, 0.25, 0.4]
 
-O2_CONSUMPTION_PER_CREW = 0.5 / 60
+#O2_CONSUMPTION_PER_CREW = 0.5 / 60
+O2_CONSUMPTION_PER_CREW = 0.05 / 60
 
 # Tile build dict
 
@@ -202,7 +291,7 @@ TILE_TYPE_BUILD = {"crater": (),
                    "volcano": "geo"
                    }
 
-FOOD_CONSUMPTION_PER_MEMBER_CREW = 1 / 60
+FOOD_CONSUMPTION_PER_MEMBER_CREW = 0.33 / 60
 CREW_PER_BASES = 5
 PARTY_TIME = 600
 

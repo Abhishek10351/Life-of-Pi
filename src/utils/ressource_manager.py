@@ -55,7 +55,8 @@ class RessourceManager:
                                    'factory_poly': ['poly_factory'],
                                    'tank': ['tank'],
                                    'asteroid_defence': ['asteroid_defence'],
-                                   'stormshield': ['stormshield']}
+                                   'stormshield': ['stormshield'],
+                                   'rocket': ['rocket']}
 
         self.current_ressource = {'H2O': self.initial_h2o,
                                   'CO2': self.initial_co2,
@@ -133,6 +134,8 @@ class RessourceManager:
                 setattr(self, building, getattr(self, building) - 1)
 
     def check_for_resource(self, resource_to_build, build_type) -> bool:
+        if build_type == 'base':
+            return True
         for key, item in resource_to_build.items():
             if self.current_ressource[key] < item:
                 return False
@@ -239,12 +242,14 @@ class RessourceManager:
 
         self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel \
                                           + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
-        if self.enable_factory:
-            for key, item in ENER_PER_BUILDING.items():
-                self.current_ressource['Ener'] -= getattr(self, key) * item
-        if self.current_ressource['Ener'] < 0:
+        
+        for key, item in ENER_PER_BUILDING.items():
+            self.current_ressource['Ener'] -= getattr(self, key) * item
+        if self.current_ressource['Ener'] <= 0:
             self.enable_factory = False
             self.current_ressource['Ener'] = 0
+        else:
+            self.enable_factory = True
 
     def update_money(self) -> None:
         """

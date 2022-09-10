@@ -6,6 +6,7 @@ import arcade
 
 from config import ASSET_PATH, TILE_TYPE_BUILD
 
+needtanksound = arcade.load_sound(str(ASSET_PATH / "sfx" / "tank.ogg"))
 
 def rect2isometric(x, y):
     """Rotates the axis by 45 degrees and then compresses the y axis by a factor of sqrt(2)."""
@@ -61,6 +62,8 @@ class Tile(arcade.Sprite):
                     tile_type_neighbours.append('')
             if "tank" in tile_type_neighbours:
                 return True
+            else:
+                arcade.play_sound(needtanksound)
         return False
 
 

@@ -1,6 +1,8 @@
 # build_sidebar.py: controls and display for sidebar for building etc.
 from typing import Dict
 
+import math
+
 import arcade
 import arcade.gui
 
@@ -99,7 +101,7 @@ class SoundCues:
         if self.sfx_player is None and self.timeouts['Crew'] == 0 and crew <= WARNLEVEL_CREW:
             self.sfx_player = arcade.play_sound(self.crew_sound)
             self.timeouts['Crew'] = MSGTO
-        if self.sfx_player is None and self.timeouts['Ener'] == 0 and energy <= WARNLEVEL_ENERGY:
+        if self.sfx_player is None and self.timeouts['Ener'] == 0 and energy <= WARNLEVEL_ENERGY and self.rate_res['Ener'] < 0:
             self.sfx_player = arcade.play_sound(self.energy_sound)
             self.timeouts['Ener'] = MSGTO
         
@@ -161,7 +163,7 @@ class SideBar:
         self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members\n",
                                    'garden': "Garden Pod: provide food for crew\n",
                                    'solar': "Solar Generator: \ngenerates energy\n",
-                                   'geo': "Geo-Thermal Generator: \ngenerates energy\n",
+                                   'geo': "Geo-Thermal Generator: \ngenerates more energy\n",
                                    'battery': "Battery: needed to store energy\n",
                                    'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources\n",
                                    'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers\n",
@@ -173,7 +175,7 @@ class SideBar:
                                    'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
                                                        "\nin-coming asteroids\n",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n",
-                                   'rocket': "Build a rocket to reach mars's moon\nand win the game\n"}
+                                   'rocket': "Build a rocket to reach Mars's moon\nand win the game\n"}
         for key in self.build_descriptions.keys():
             self.build_descriptions[key] += DESCR_STRING[key]
 
@@ -427,7 +429,7 @@ class SideBar:
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.GREEN, font_size=12,
                                  anchor_x="center", anchor_y="center")
             else:
-                arcade.draw_text("can't build structure here!", self.window_width / 2,
+                arcade.draw_text("can't build structure!", self.window_width / 2,
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.RED, font_size=12,
                                  anchor_x="center", anchor_y="center")
 
@@ -444,7 +446,7 @@ class SideBar:
             'O2:',
             'Polymers:',
             'Food:',
-            'Crew'
+            'Crew:',
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
@@ -463,37 +465,55 @@ class SideBar:
             if max_cap == 0:
                 text_col = arcade.color.GRAY
             elif (have / max_cap) < 0.33:
-                text_col = arcade.color.GREEN
+                text_col = arcade.color.RED
             elif (have / max_cap) < 0.66:
                 text_col = arcade.color.YELLOW
             else:
-                text_col = arcade.color.RED
+                text_col = arcade.color.GREEN
             if have >= max_cap:
-                line += ' Full! Build more '
                 if key in ['Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food']:
-                    line += 'tanks'
+                    line += ' Full! Build tanks'
                 elif key in ['Ener']:
-                    line += 'batteries'
-                elif key in ['Crew']:
-                    line += 'bases'
+                    line += ' Full! '
+            if have == 0 and key in ['Crew']:
+                line += ' build habit. pods'
+                text_col = arcade.color.RED
             if not self.text.get(f"res_display_{key}_{i}"):
                 self.text[f"res_display_{key}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
                                                                   anchor_x="left", anchor_y="center")
             self.text[f"res_display_{key}_{i}"].text = line
+            self.text[f"res_display_{key}_{i}"].color = text_col
 
-    def draw_time_left(self):
+    """def draw_time_left(self):
         info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
         if not self.text.get("time_left"):
             self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
                                                  start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
-        self.text["time_left"].text = info
-
+        self.text["time_left"].text = info"""
+    
+    def draw_time_left(self):
+        if self.parent.launchtime <= 10*60:
+            info = 'Time to launch : %i seconds' % round(self.parent.launchtime/60)
+            if not self.text.get("time_left"):
+                self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
+                                                     start_y=SCREEN_HEIGHT / 2 , color=arcade.color.GREEN)
+            self.text["time_left"].text = info
+    
+    def draw_power_warn(self):
+        if self.parent.ressource_manager.current_ressource['Ener'] < 5 and self.tic % 10 > 3:
+            arcade.draw_text("Warning! Power Failure!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 
+                arcade.color.RED, font_size=16, anchor_x="center", anchor_y="center")
+    
     # used to display some information about the current tile selected by
     # player from Main View
     def update_tile(self, selected_tile: utils.Tile):
         # get tile coords
+        """
         info = f"Screen co-ordinate: {(selected_tile.center_x, selected_tile.center_y)}\n" \
                f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
+               f"Tile type: {selected_tile.tile_type}"
+        """
+        info = f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
                f"Tile type: {selected_tile.tile_type}"
 
         if not self.text.get("tile_info"):
@@ -513,6 +533,7 @@ class SideBar:
         self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()
+        self.draw_power_warn()
         #for text in self.text.values():
         #    text.draw()
         for key in self.text:

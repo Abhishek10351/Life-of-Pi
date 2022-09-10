@@ -9,5 +9,5 @@ if __name__ == '__main__':
     win_loose = WinLooseMenu(game)
     game.show_view(menu)
     music = arcade.Sound(str(ASSET_PATH / "music" / "frontier.ogg"))
-    music.play(MUSIC_VOLUME)
+    music.play(MUSIC_VOLUME,loop=True)
     arcade.run()
