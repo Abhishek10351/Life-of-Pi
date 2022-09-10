@@ -248,7 +248,7 @@ class AsteroidStrike:
                 arcade.play_sound(self.explode_sound)
                 targets = self.parent.find_buildings_in_range(self.pos_x, self.pos_y, r=ASTEROID_BLAST_RADIUS)
                 if len(targets) > 0:
-                    ind = random.randint(0, len(targets) - 1) # update to just destroy one building
+                    ind = random.randint(0, len(targets) - 1)  # update to just destroy one building
                     self.parent.destroy_buildings([targets[ind]])
             self.active = False
             self.lasers_in_range = []

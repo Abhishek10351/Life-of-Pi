@@ -242,7 +242,7 @@ class RessourceManager:
 
         self.current_ressource['Ener'] += RESSOURCE_GENERATION['solar_pannel'] * self.solar_pannel \
                                           + RESSOURCE_GENERATION['geothermal_generator'] * self.geothermal_generator
-        
+
         for key, item in ENER_PER_BUILDING.items():
             self.current_ressource['Ener'] -= getattr(self, key) * item
         if self.current_ressource['Ener'] <= 0:
