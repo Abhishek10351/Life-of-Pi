@@ -105,7 +105,6 @@ class SoundCues:
         
         if not self.sfx_player is None:
             if not self.sfx_player.playing:
-                print('finished sound')
                 self.sfx_player = None
         
         for key in self.timeouts:
