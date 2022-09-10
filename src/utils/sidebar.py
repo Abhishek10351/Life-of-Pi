@@ -168,8 +168,8 @@ class SideBar:
                                    'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources\n",
                                    'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers\n",
                                    'fe_mining': "Fe/Iron Mining Operation: \ncollects Fe from crater deposits\n",
-                                   'factory_co2': "CO Factory: generate C and O \nfrom CO2\n",
-                                   'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
+                                   'factory_co2': "CO Factory: generate C and O2 \nfrom CO2\n",
+                                   'factory_h2o': "HO Factory: generate H and O2 \nfrom H2O\n",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
                                    'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "

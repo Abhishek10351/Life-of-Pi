@@ -150,6 +150,9 @@ class Game(arcade.View):
         self.debugging_console_tex_inp = None
         self.debugging_console_tex_out = None
         self.debugging_console_tex = None
+        
+        self.init_win_delta_time = None
+        self.win_delta_time = None
 
         self.tic = 0
 

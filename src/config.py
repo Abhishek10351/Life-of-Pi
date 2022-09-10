@@ -54,10 +54,11 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 100,
                               'H': 100,
                               'O2': 100,
                               'Fe': 100,
+
                               'Poly': 0,
                               'Ener': 100,
                               'Money': 0,
-                              'Food': 100,
+                              'Food': 150,
                               'Crew': 1}
 """
 INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 0,
@@ -73,6 +74,7 @@ INITIAL_RESSOURCES_LEVEL_0 = {'H2O': 0,
                               'Crew': 0}
 
 # Initial storage without improvement
+
 """
 INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
                                       'CO2': 150,
@@ -83,7 +85,7 @@ INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
                                       'Poly': 150,
                                       'Ener': 150,
                                       'Money': 100000,
-                                      'Food': 150,
+                                      'Food': 200,
                                       'Crew': 1}
 """
 INITIAL_MAXIMAL_RESSOURCES_LEVEL_0 = {'H2O': 150,
@@ -107,8 +109,8 @@ RESSOURCE_GENERATION = {'h2o_liquid_generator': 2 / 60,
                         'co2_breaker_factory': 2 / 60,
                         'h2o_breaker_factory': 2 / 60,
                         'poly_factory': 0.5 / 60,
-                        'solar_pannel': 2 / 60,
-                        'geothermal_generator': 5 / 60,
+                        'solar_pannel': 4 / 60,
+                        'geothermal_generator': 6 / 60,
                         'garden': 2 / 60}
 """
 
@@ -163,8 +165,7 @@ CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'bases': 0,
                           'asteroid_defence': 5,
                           'stormshield': 5,
-                          'rocket': 50}
-"""
+                          'rocket': 100}
 
 CREW_MEMBER_TO_OPERATE = {'h2o_liquid_generator': 2,
                           'h2o_ice_generator': 1,
@@ -280,6 +281,7 @@ BRIGHTNESS_VALUE = [0.7, 1, 0.6, 0.3, 0.25, 0.25, 0.4]
 #O2_CONSUMPTION_PER_CREW = 0.5 / 60
 O2_CONSUMPTION_PER_CREW = 0.05 / 60
 
+
 # Tile build dict
 
 TILE_TYPE_BUILD = {"crater": (),
@@ -293,7 +295,8 @@ TILE_TYPE_BUILD = {"crater": (),
 
 FOOD_CONSUMPTION_PER_MEMBER_CREW = 0.33 / 60
 CREW_PER_BASES = 5
-PARTY_TIME = 600
+#Time to win when the rocket is build
+PARTY_TIME = 60
 
 DISASTER_PER_MINIT = 1
 DISASTER_PROBA = 1 / 3600

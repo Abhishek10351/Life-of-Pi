@@ -157,8 +157,8 @@ class RessourceManager:
 
     def update_crew(self) -> None:
         # You have a total crew of 1 (yourself) when you don't have bases
-        self.maximum_ressource['Crew'] = 1 + (CREW_PER_BASES * self.bases)
-        self.current_ressource['Total_crew'] = 1 + (CREW_PER_BASES * self.bases)
+        self.maximum_ressource['Crew'] = self.initial_crew + (CREW_PER_BASES * self.bases)
+        self.current_ressource['Total_crew'] = self.initial_crew + (CREW_PER_BASES * self.bases)
         self.current_ressource['Crew'] = self.current_ressource['Total_crew']
         for key, item in CREW_MEMBER_TO_OPERATE.items():
             self.current_ressource['Crew'] -= getattr(self, key) * item
