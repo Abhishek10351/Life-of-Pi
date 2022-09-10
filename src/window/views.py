@@ -11,7 +11,8 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
                     IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO)
+                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO,
+                    SCREEN_WIDTH, SCREEN_HEIGHT)
 from utils import (Disasters, RessourceManager, SideBar, Tile, TileList,
                    rect2isometric)
 
@@ -35,6 +36,7 @@ class Menu(arcade.View):
         self.v_box_message = None
 
         self.manager = None
+        self.background = arcade.load_texture(str(ASSET_PATH / "titles" / "menu_background.png"))
 
     def on_show_view(self) -> None:
         """Called when the current is switched to this view."""
@@ -42,7 +44,7 @@ class Menu(arcade.View):
 
     def setup(self) -> None:
         """Set up the game variables. Call to re-start the game."""
-        self.v_box = arcade.gui.UIBoxLayout(space_between=30)
+        self.v_box = arcade.gui.UIBoxLayout(space_between=10)
         self.v_box_message = arcade.gui.UIBoxLayout()
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -73,11 +75,11 @@ class Menu(arcade.View):
         message_box = arcade.gui.UIMessageBox(
             width=400,
             height=300,
-            message_text="Hey Player, Welcome to Marrrs Explorer."
-                         "You were travelling on space and after your rocket fuel finished you got stranded on Mars, "
-                         "A.K.A (The Red Planet). Now you have to wait for people from to rescue you and take you"
-                         "back to Earth. Until then you have to collect money, minerals and other"
-                         "stuff and use them properly to stay alive.",
+            message_text="Welcome to the command post of Martian Mission Cobra-2. "
+                         "You need to take control of the colony, build bases, extract and process natural resources, "
+                         "and use them to construct a rocket to launch to Mars's moon, Phobos. "
+                         "Watch your resources: run out of food or oxygen and the colony will perish! "
+                         "Good luck!",
             callback=self._how_to_play_callback)
 
         self.v_box_message.add(message_box)
@@ -91,7 +93,9 @@ class Menu(arcade.View):
     def on_draw(self) -> None:
         """Called when this view should draw."""
         self.clear()
-
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
         self.manager.draw()
 
     def _on_click_play_button(self, _: arcade.gui.UIOnClickEvent) -> None:
@@ -125,7 +129,7 @@ class Game(arcade.View):
         self.camera: arcade.Camera = None
 
         self.light_layer = None
-        self.time = time.time()
+        self.time = time.time() # update to start in day light
         self.time_delta = 0
 
         self.ressource_manager = RessourceManager()
@@ -202,23 +206,27 @@ class Game(arcade.View):
         self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
         # this can be renamed to player sprite, if player sprite is decided to be made.
         self.camera_sprite = arcade.Sprite(str(ASSET_PATH / "utils" / "camera.png"))
-        self.camera_sprite.center_x = 400
-        self.camera_sprite.center_y = 300
+        #self.camera_sprite.center_x = 400
+        #self.camera_sprite.center_y = 300
+        self.camera_sprite.center_x = 0
+        self.camera_sprite.center_y = 0
         self.game_scene.add_sprite("Camera", self.camera_sprite)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
+        #self.physics_engine = arcade.PhysicsEnginePlatformer(self.camera_sprite, gravity_constant=0)
 
         self.light_layer = LightLayer(self.main_window.width, self.main_window.height)
 
         self.sidebar.setup_sidebar()
         self.disasters.setup()
         self.tic = 0
+        self.launchtime = 11*60
 
     def try_to_build(self, build_type):
         build_type_to_file_name = {"fe_mining": "fe_mining_iso.png",
                                    "co2extract": "co2_generator_iso.png",
                                    "iceextract": "ice_generator_iso.png",
                                    "factory_h2o": "factory_h2o_iso.png",
+                                   "factory_co2": "factory_co2_iso.png",
                                    "base": "base_iso.png",
                                    "garden": "garden_iso.png",
                                    "solar": "solargen_iso.png",
@@ -380,26 +388,34 @@ class Game(arcade.View):
     def check_win_loose(self):
         if self.ressource_manager.current_ressource['O2'] < 0 or self.ressource_manager.current_ressource['Food'] < 0:
             winloose = WinLooseMenu(self.main_window, 'Game Over !')
+            self.main_window.show_view(winloose) # TODO
+        """if self.time_delta > PARTY_TIME or self.ressource_manager.rocket > 0:
+            winloose = WinLooseMenu(self.main_window, 'You Win !')
+            self.main_window.show_view(winloose)"""
+        if self.launchtime <= 0:
+            winloose = WinLooseMenu(self.main_window, 'You Win !')
             self.main_window.show_view(winloose)
-        if self.ressource_manager.rocket > 0:
-            if self.init_win_delta_time is None:
-                self.init_win_delta_time = self.time = time.time()
-            self.win_delta_time = datetime.timedelta(seconds=time.time() - self.init_win_delta_time).total_seconds()
-            if self.win_delta_time > 60:
-                winloose = WinLooseMenu(self.main_window, 'You Win !')
-                self.main_window.show_view(winloose)
-        else:
-            self.init_win_delta_time = None
-            
 
     def generate_disaster(self):
         """Randomly generate disasters"""
-        if self.time_delta > 180:
-            rand = random.randint(0, 1 / DISASTER_PROBA)
+        time_diff_since_last = self.time_delta - self.disasters.last_disaster_time
+        #print(self.time_delta, time_diff_since_last, self.ressource_manager.current_ressource['Poly'])
+        if self.time_delta < 60: # give player a break in first 60 s
+            pass
+        elif self.ressource_manager.current_ressource['Poly'] < 10 and time_diff_since_last > 45: # go easy, no poly
+            #rand = random.randint(0, 1 / DISASTER_PROBA)
+            rand = random.randint(0, 1)
             if rand == 0:
-                self.disasters.new_dust_storm()
+                self.disasters.new_dust_storm(self.time_delta)
             elif rand == 1:
-                self.disasters.new_asteroid_strike()
+                self.disasters.new_asteroid_strike(self.time_delta)
+        elif self.ressource_manager.current_ressource['Poly'] > 10 and time_diff_since_last > 20: # player has poly, get em!
+            #rand = random.randint(0, 1 / DISASTER_PROBA)
+            rand = random.randint(0, 1)
+            if rand == 0:
+                self.disasters.new_dust_storm(self.time_delta)
+            elif rand == 1:
+                self.disasters.new_asteroid_strike(self.time_delta)
 
     def update_sprite_animations(self):
         if self.tic % 30 == 0:
@@ -410,7 +426,7 @@ class Game(arcade.View):
 
     def on_update(self, delta_time):
         """Movement and game logic"""
-        self.physics_engine.update()
+        #self.physics_engine.update()
         # Position the camera
         self.center_camera_to_camera()
 
@@ -421,7 +437,10 @@ class Game(arcade.View):
 
         self.ressource_manager.update()
         self.generate_disaster()
-
+        
+        if self.ressource_manager.rocket > 0:
+            self.launchtime -= 1
+        
         self.check_win_loose()
         self.tic += 1
 
@@ -442,6 +461,8 @@ class WinLooseMenu(arcade.View):
         self.manager = None
 
         self.win_loose_message = win_loose
+        
+        self.background = arcade.load_texture(str(ASSET_PATH / "titles" / "victory_background.png"))
 
     def on_show_view(self) -> None:
         """Called when the current is switched to this view."""
@@ -449,7 +470,7 @@ class WinLooseMenu(arcade.View):
 
     def setup(self) -> None:
         """Set up the game variables. Call to re-start the game."""
-        self.v_box = arcade.gui.UIBoxLayout(space_between=30)
+        self.v_box = arcade.gui.UIBoxLayout(space_between=10)
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
@@ -477,7 +498,9 @@ class WinLooseMenu(arcade.View):
     def on_draw(self) -> None:
         """Called when this view should draw."""
         self.clear()
-
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
         self.manager.draw()
 
     def _on_click_restart_button(self, _: arcade.gui.UIOnClickEvent) -> None:

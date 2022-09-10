@@ -1,6 +1,8 @@
 # build_sidebar.py: controls and display for sidebar for building etc.
 from typing import Dict
 
+import math
+
 import arcade
 import arcade.gui
 
@@ -12,6 +14,105 @@ DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
 BUILDTEXTHEIGHT = 35
 
+WARNLEVEL_OXYGEN = 50
+WARNLEVEL_FOOD = 50
+WARNLEVEL_CREW = 0
+WARNLEVEL_ENERGY = 100
+
+WARN_PREDICT_TICKS = 15*10
+MSGTO = 50
+
+class SoundCues:
+    def __init__(self, parent):
+        self.parent = parent
+        self.ressource_manager = self.parent.parent.ressource_manager
+        self.garden_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "gardenpods.ogg"))
+        self.oxygen_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "oxygen.ogg"))
+        self.energy_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "low_power.ogg"))
+        self.crew_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "habitation.ogg"))
+        self.tank_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "tank.ogg"))
+        self.sfx_player = None
+        
+        self.timeouts = {}
+        self.timeouts['O2'] = 10
+        self.timeouts['Food'] = 0
+        self.timeouts['Crew'] = 0
+        self.timeouts['Ener'] = 0
+        
+        self.last_res = {}
+        self.rate_res = {}
+        for key in ['O2','Food','Crew','Ener']:
+            self.last_res[key] = None
+            self.rate_res[key] = 0
+        
+        self.timeouts['tank'] = 0
+    
+    def reset(self):
+        self.sfx_player = None
+        
+        self.timeouts['O2'] = 0
+        self.timeouts['Food'] = 0
+        self.timeouts['Crew'] = 0
+        self.timeouts['Ener'] = 0
+        
+        self.timeouts['tank'] = 0
+    
+    def get_rates(self):
+        for key in ['O2','Food','Crew','Ener']:
+            if self.last_res[key] is None:
+                self.rate_res[key] = 0
+            else:
+                self.rate_res[key] = self.ressource_manager.current_ressource[key] - self.last_res[key]
+            self.last_res[key] = self.ressource_manager.current_ressource[key]
+    
+    def update(self):
+        
+        self.get_rates()
+        
+        oxygen_rate_warn = False
+        food_rate_warn = False
+        
+        if self.rate_res['O2'] < 0:
+            ticks_left = -(self.ressource_manager.current_ressource['O2']/self.rate_res['O2'])
+            if ticks_left < WARN_PREDICT_TICKS:
+                oxygen_rate_warn = True
+                #print('Oxygen rate',self.rate_res['O2'],ticks_left)
+        if self.rate_res['Food'] < 0:
+            ticks_left = -(self.ressource_manager.current_ressource['Food']/self.rate_res['Food'])
+            if ticks_left < WARN_PREDICT_TICKS:
+                food_rate_warn = True
+                #print('Food rate',self.rate_res['Food'],ticks_left)
+        
+        oxygen = self.ressource_manager.current_ressource['O2']
+        food = self.ressource_manager.current_ressource['Food']
+        crew = self.ressource_manager.current_ressource['Crew']
+        energy = self.ressource_manager.current_ressource['Ener']
+        
+        alert_oxygen = False
+        alert_food = False
+        alert_crew = False
+        alert_energy = False
+        if self.sfx_player is None and self.timeouts['O2'] == 0 and (oxygen <= WARNLEVEL_OXYGEN or oxygen_rate_warn):
+            self.sfx_player = arcade.play_sound(self.oxygen_sound)
+            self.timeouts['O2'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Food'] == 0 and (food <= WARNLEVEL_FOOD or food_rate_warn):
+            self.sfx_player = arcade.play_sound(self.garden_sound)
+            self.timeouts['Food'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Crew'] == 0 and crew <= WARNLEVEL_CREW:
+            self.sfx_player = arcade.play_sound(self.crew_sound)
+            self.timeouts['Crew'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Ener'] == 0 and energy <= WARNLEVEL_ENERGY and self.rate_res['Ener'] < 0:
+            self.sfx_player = arcade.play_sound(self.energy_sound)
+            self.timeouts['Ener'] = MSGTO
+        
+        if not self.sfx_player is None:
+            if not self.sfx_player.playing:
+                self.sfx_player = None
+        
+        for key in self.timeouts:
+            if self.timeouts[key] > 0:
+                self.timeouts[key] -= 1
+    
 
 # SideBar: controls things like the build menu
 class SideBar:
@@ -51,6 +152,8 @@ class SideBar:
         self.denied_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "denied.ogg"))
 
         self.text: Dict[arcade.Text] = {}
+        
+        self.soundcues = SoundCues(self)
 
     def setup_sidebar(self):
         self.sb_manager = arcade.gui.UIManager()
@@ -60,7 +163,7 @@ class SideBar:
         self.build_descriptions = {'base': "Habitation Pod: houses \ncrew members\n",
                                    'garden': "Garden Pod: provide food for crew\n",
                                    'solar': "Solar Generator: \ngenerates energy\n",
-                                   'geo': "Geo-Thermal Generator: \ngenerates energy\n",
+                                   'geo': "Geo-Thermal Generator: \ngenerates more energy\n",
                                    'battery': "Battery: needed to store energy\n",
                                    'iceextract': "H2O Ice Extractor: collects H2O \nfrom ice sources\n",
                                    'co2extract': "CO2 Extractor: collects CO2 \nfrom geysers\n",
@@ -72,7 +175,7 @@ class SideBar:
                                    'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
                                                        "\nin-coming asteroids\n",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n",
-                                   'rocket': "Build a rocket to reach mars's moon\nand win the game\n"}
+                                   'rocket': "Build a rocket to reach Mars's moon\nand win the game\n"}
         for key in self.build_descriptions.keys():
             self.build_descriptions[key] += DESCR_STRING[key]
 
@@ -181,7 +284,7 @@ class SideBar:
         anchor = arcade.gui.UIAnchorWidget(
             anchor_x="right",
             anchor_y="bottom",
-            align_x=0,
+            align_x=-15,
             align_y=15,
             child=self.res_label1)
         self.res_label1.anchor = anchor
@@ -192,12 +295,16 @@ class SideBar:
         anchor = arcade.gui.UIAnchorWidget(
             anchor_x="right",
             anchor_y="bottom",
-            align_x=0,
+            align_x=-15,
             align_y=15,
             child=self.res_label2)
         self.res_label2.anchor = anchor
 
         self.res_view = 0
+        
+        self.soundcues.reset()
+        self.switch_build()
+        self.switch_resview()
 
     def check_button_hover(self):
         if self.build == 0:
@@ -261,6 +368,7 @@ class SideBar:
         if self.msg_to > 0:
             self.msg_to -= 1
         self.check_button_hover()
+        self.soundcues.update()
 
         """
         # hack to play with resources (for testing)
@@ -321,7 +429,7 @@ class SideBar:
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.GREEN, font_size=12,
                                  anchor_x="center", anchor_y="center")
             else:
-                arcade.draw_text("can't build structure here!", self.window_width / 2,
+                arcade.draw_text("can't build structure!", self.window_width / 2,
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.RED, font_size=12,
                                  anchor_x="center", anchor_y="center")
 
@@ -338,7 +446,7 @@ class SideBar:
             'O2:',
             'Polymers:',
             'Food:',
-            'Crew:'
+            'Crew:',
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
@@ -357,38 +465,55 @@ class SideBar:
             if max_cap == 0:
                 text_col = arcade.color.GRAY
             elif (have / max_cap) < 0.33:
-                text_col = arcade.color.GREEN
+                text_col = arcade.color.RED
             elif (have / max_cap) < 0.66:
                 text_col = arcade.color.YELLOW
             else:
-                text_col = arcade.color.RED
+                text_col = arcade.color.GREEN
             if have >= max_cap:
-                line += ' Full! Build more '
                 if key in ['Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food']:
-                    line += 'tanks'
+                    line += ' Full! Build tanks'
                 elif key in ['Ener']:
-                    line += 'batteries'
-                elif key in ['Crew']:
-                    line += 'bases'
+                    line += ' Full! '
+            if have == 0 and key in ['Crew']:
+                line += ' build habit. pods'
+                text_col = arcade.color.RED
             if not self.text.get(f"res_display_{key}_{i}"):
                 self.text[f"res_display_{key}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
                                                                   anchor_x="left", anchor_y="center")
             self.text[f"res_display_{key}_{i}"].text = line
+            self.text[f"res_display_{key}_{i}"].color = text_col
 
+    """def draw_time_left(self):
+        info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
+        if not self.text.get("time_left"):
+            self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
+                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
+        self.text["time_left"].text = info"""
+    
     def draw_time_left(self):
-        if self.parent.init_win_delta_time is not None:
-            info = 'Time before win : %i s' % round(PARTY_TIME - self.parent.win_delta_time)
+        if self.parent.launchtime <= 10*60:
+            info = 'Time to launch : %i seconds' % round(self.parent.launchtime/60)
             if not self.text.get("time_left"):
                 self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
-                                                    start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
+                                                     start_y=SCREEN_HEIGHT / 2 , color=arcade.color.GREEN)
             self.text["time_left"].text = info
-
+    
+    def draw_power_warn(self):
+        if self.parent.ressource_manager.current_ressource['Ener'] < 5 and self.tic % 10 > 3:
+            arcade.draw_text("Warning! Power Failure!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 
+                arcade.color.RED, font_size=16, anchor_x="center", anchor_y="center")
+    
     # used to display some information about the current tile selected by
     # player from Main View
     def update_tile(self, selected_tile: utils.Tile):
         # get tile coords
+        """
         info = f"Screen co-ordinate: {(selected_tile.center_x, selected_tile.center_y)}\n" \
                f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
+               f"Tile type: {selected_tile.tile_type}"
+        """
+        info = f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
                f"Tile type: {selected_tile.tile_type}"
 
         if not self.text.get("tile_info"):
@@ -408,5 +533,11 @@ class SideBar:
         self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()
-        for text in self.text.values():
-            text.draw()
+        self.draw_power_warn()
+        #for text in self.text.values():
+        #    text.draw()
+        for key in self.text:
+            if 'res_display' in key and self.res_view == 0:
+                continue
+            self.text[key].draw()
+        
