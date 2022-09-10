@@ -42,6 +42,13 @@ class SideBar:
         self.sb_manager: arcade.gui.UIManager = None
 
         self.build_descriptions = None
+        
+        self.res_text = arcade.Text('Energy: Iron(Fe): H2O: CO2: C: H: O2: Polymers: Food: Crew',
+            SCREEN_WIDTH - 290,RES_TEXT_HEIGHT,color=arcade.color.GREEN,width=10,font_size=10,
+            multiline=True,align='left')
+            
+        self.build_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "build.ogg"))
+        self.denied_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "denied.ogg"))
 
         self.text: Dict[arcade.Text] = {}
 
@@ -276,10 +283,12 @@ class SideBar:
         print('building at:', tile_x, tile_y, self.trybuild)
         result = self.parent.try_to_build(self.trybuild)
         if result:
+            arcade.play_sound(self.build_sound)
             self.build_result = True
             self.trybuild = None
             self.msg_to = 90
         else:
+            arcade.play_sound(self.denied_sound)
             self.build_result = False
             self.trybuild = None
             self.msg_to = 120

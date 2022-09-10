@@ -48,6 +48,8 @@ class Tile(arcade.Sprite):
         self.texture = self.frame_textures[self.frame_ind]
 
     def check_build(self, build_type: str, lst_neighbours):
+        if not self.tile_type in TILE_TYPE_BUILD.keys():
+            return False
         if build_type in TILE_TYPE_BUILD[self.tile_type]:
             return True
         elif "factory" in build_type:
