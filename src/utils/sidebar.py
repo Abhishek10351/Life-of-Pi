@@ -1,10 +1,12 @@
 # build_sidebar.py: controls and display for sidebar for building etc.
+from typing import Dict
 
 import arcade
 import arcade.gui
 
-from config import ASSET_PATH, PARTY_TIME, SCREEN_HEIGHT, SCREEN_WIDTH, DESCR_STRING
-from utils import isometric2rect
+import utils
+from config import (ASSET_PATH, DESCR_STRING, PARTY_TIME, SCREEN_HEIGHT,
+                    SCREEN_WIDTH)
 
 DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
@@ -48,6 +50,8 @@ class SideBar:
         self.build_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "build.ogg"))
         self.denied_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "denied.ogg"))
 
+        self.text: Dict[arcade.Text] = {}
+
     def setup_sidebar(self):
         self.sb_manager = arcade.gui.UIManager()
         self.sb_manager.enable()
@@ -65,7 +69,8 @@ class SideBar:
                                    'factory_h2o': "HO Factory: generate H and O \nfrom H2O\n",
                                    'factory_poly': "Polymer Factory: generates \npolymers from C and H\n",
                                    'tank': "Tank: used to store chemicals\n",
-                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from \nin-coming asteroids\n",
+                                   'asteroid_defence': "Asteroid Defence Station: used to \ndefend the colony from "
+                                                       "\nin-coming asteroids\n",
                                    'stormshield': "Dust Storm Shield: defends nearby \nbuildings during dust storms\n",
                                    'rocket': "Build a rocket to reach mars's moon\nand win the game\n"}
         for key in self.build_descriptions.keys():
@@ -272,7 +277,7 @@ class SideBar:
             return
 
         # get tile coords
-        (x, y) = isometric2rect(coords[0], coords[1])
+        (x, y) = utils.isometric2rect(coords[0], coords[1])
         tile_x = int(x / 80)
         tile_y = int(y / 80)
         print('building at:', tile_x, tile_y, self.trybuild)
@@ -304,6 +309,7 @@ class SideBar:
             arcade.draw_lrwh_rectangle_textured(x - 116 / 2, y - 82 / 2, 116, 82,
                                                 self.buildicons_textures[self.trybuild], alpha=100)
 
+    # FIXME: Use arcade.Text instead of arcade.draw_text
     def draw_build_message(self):
         if self.trybuild is not None:
             arcade.draw_text('click to location to build (C to cancel)', self.window_width / 2,
@@ -336,8 +342,11 @@ class SideBar:
         ]
         for (i, line) in enumerate(text_lines):
             h = RES_TEXT_HEIGHT - 15 * i
-            arcade.draw_text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN, font_size=12,
-                             anchor_x="right", anchor_y="center")
+            if not self.text.get(f"res_display_{line}_{i}"):
+                self.text[f"res_display_{line}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 230, h, arcade.color.GREEN,
+                                                                   font_size=12, anchor_x="right", anchor_y="center")
+            self.text[f"res_display_{line}_{i}"].text = line
+
         keys = ['Ener', 'Fe', 'H2O', 'CO2', 'C', 'H', 'O2', 'Poly', 'Food', 'Crew']
 
         for (i, key) in enumerate(keys):
@@ -361,20 +370,34 @@ class SideBar:
                     line += 'batteries'
                 elif key in ['Crew']:
                     line += 'bases'
-            arcade.draw_text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
-                             anchor_x="left", anchor_y="center")
+            if not self.text.get(f"res_display_{key}_{i}"):
+                self.text[f"res_display_{key}_{i}"] = arcade.Text(line, SCREEN_WIDTH - 220, h, text_col, font_size=12,
+                                                                  anchor_x="left", anchor_y="center")
+            self.text[f"res_display_{key}_{i}"].text = line
 
     def draw_time_left(self):
-        arcade.draw_text('Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta),
-                         (SCREEN_WIDTH / 2) - 105, SCREEN_HEIGHT - 20, arcade.color.GREEN, font_size=12)
-    
+        info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
+        if not self.text.get("time_left"):
+            self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
+                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
+        self.text["time_left"].text = info
+
     # used to display some information about the current tile selected by
     # player from Main View
-    def DisplayTile(self, coords):
+    def update_tile(self, selected_tile: utils.Tile):
         # get tile coords
-        (x, y) = isometric2rect(coords[0], coords[1])
-        tile_x = int(x / 80)  # noqa: F841
-        tile_y = int(y / 80)  # noqa: F841
+        info = f"Screen co-ordinate: {(selected_tile.center_x, selected_tile.center_y)}\n" \
+               f"Tile co-ordinate: {(selected_tile.isometric_x, selected_tile.isometric_y)}\n" \
+               f"Tile type: {selected_tile.tile_type}"
+
+        if not self.text.get("tile_info"):
+            self.text["tile_info"] = arcade.Text(text=info, start_x=SCREEN_WIDTH - 200, start_y=SCREEN_HEIGHT - 20,
+                                                 color=arcade.color.GREEN, multiline=True, width=200)
+        self.text["tile_info"].text = info
+        # (x, y) = selected_tile.center_x, selected_tile.center_y
+        # tile_x = int(x / 80)  # noqa: F841
+        # tile_y = int(y / 80)  # noqa: F841
+
         # TODO: interpret whats here (tilemap?), display message
 
     def draw(self):
@@ -384,3 +407,5 @@ class SideBar:
         self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()
+        for text in self.text.values():
+            text.draw()
