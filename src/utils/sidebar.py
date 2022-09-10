@@ -12,6 +12,106 @@ DESCR_TEXT_HEIGHT = 180
 RES_TEXT_HEIGHT = 180
 BUILDTEXTHEIGHT = 35
 
+WARNLEVEL_OXYGEN = 50
+WARNLEVEL_FOOD = 50
+WARNLEVEL_CREW = 0
+WARNLEVEL_ENERGY = 100
+
+WARN_PREDICT_TICKS = 15*10
+MSGTO = 50
+
+class SoundCues:
+    def __init__(self, parent):
+        self.parent = parent
+        self.ressource_manager = self.parent.parent.ressource_manager
+        self.garden_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "gardenpods.ogg"))
+        self.oxygen_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "oxygen.ogg"))
+        self.energy_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "low_power.ogg"))
+        self.crew_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "habitation.ogg"))
+        self.tank_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "tank.ogg"))
+        self.sfx_player = None
+        
+        self.timeouts = {}
+        self.timeouts['O2'] = 10
+        self.timeouts['Food'] = 0
+        self.timeouts['Crew'] = 0
+        self.timeouts['Ener'] = 0
+        
+        self.last_res = {}
+        self.rate_res = {}
+        for key in ['O2','Food','Crew','Ener']:
+            self.last_res[key] = None
+            self.rate_res[key] = 0
+        
+        self.timeouts['tank'] = 0
+    
+    def reset(self):
+        self.sfx_player = None
+        
+        self.timeouts['O2'] = 0
+        self.timeouts['Food'] = 0
+        self.timeouts['Crew'] = 0
+        self.timeouts['Ener'] = 0
+        
+        self.timeouts['tank'] = 0
+    
+    def get_rates(self):
+        for key in ['O2','Food','Crew','Ener']:
+            if self.last_res[key] is None:
+                self.rate_res[key] = 0
+            else:
+                self.rate_res[key] = self.ressource_manager.current_ressource[key] - self.last_res[key]
+            self.last_res[key] = self.ressource_manager.current_ressource[key]
+    
+    def update(self):
+        
+        self.get_rates()
+        
+        oxygen_rate_warn = False
+        food_rate_warn = False
+        
+        if self.rate_res['O2'] < 0:
+            ticks_left = -(self.ressource_manager.current_ressource['O2']/self.rate_res['O2'])
+            if ticks_left < WARN_PREDICT_TICKS:
+                oxygen_rate_warn = True
+                #print('Oxygen rate',self.rate_res['O2'],ticks_left)
+        if self.rate_res['Food'] < 0:
+            ticks_left = -(self.ressource_manager.current_ressource['Food']/self.rate_res['Food'])
+            if ticks_left < WARN_PREDICT_TICKS:
+                food_rate_warn = True
+                print('Food rate',self.rate_res['Food'],ticks_left)
+        
+        oxygen = self.ressource_manager.current_ressource['O2']
+        food = self.ressource_manager.current_ressource['Food']
+        crew = self.ressource_manager.current_ressource['Crew']
+        energy = self.ressource_manager.current_ressource['Ener']
+        
+        alert_oxygen = False
+        alert_food = False
+        alert_crew = False
+        alert_energy = False
+        if self.sfx_player is None and self.timeouts['O2'] == 0 and (oxygen <= WARNLEVEL_OXYGEN or oxygen_rate_warn):
+            self.sfx_player = arcade.play_sound(self.oxygen_sound)
+            self.timeouts['O2'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Food'] == 0 and (food <= WARNLEVEL_FOOD or food_rate_warn):
+            self.sfx_player = arcade.play_sound(self.garden_sound)
+            self.timeouts['Food'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Crew'] == 0 and crew <= WARNLEVEL_CREW:
+            self.sfx_player = arcade.play_sound(self.crew_sound)
+            self.timeouts['Crew'] = MSGTO
+        if self.sfx_player is None and self.timeouts['Ener'] == 0 and energy <= WARNLEVEL_ENERGY:
+            self.sfx_player = arcade.play_sound(self.energy_sound)
+            self.timeouts['Ener'] = MSGTO
+        
+        if not self.sfx_player is None:
+            if not self.sfx_player.playing:
+                print('finished sound')
+                self.sfx_player = None
+        
+        for key in self.timeouts:
+            if self.timeouts[key] > 0:
+                self.timeouts[key] -= 1
+    
 
 # SideBar: controls things like the build menu
 class SideBar:
@@ -51,6 +151,8 @@ class SideBar:
         self.denied_sound = arcade.load_sound(str(ASSET_PATH / "sfx" / "denied.ogg"))
 
         self.text: Dict[arcade.Text] = {}
+        
+        self.soundcues = SoundCues(self)
 
     def setup_sidebar(self):
         self.sb_manager = arcade.gui.UIManager()
@@ -198,6 +300,8 @@ class SideBar:
         self.res_label2.anchor = anchor
 
         self.res_view = 0
+        
+        self.soundcues.reset()
 
     def check_button_hover(self):
         if self.build == 0:
@@ -261,6 +365,7 @@ class SideBar:
         if self.msg_to > 0:
             self.msg_to -= 1
         self.check_button_hover()
+        self.soundcues.update()
 
         """
         # hack to play with resources (for testing)
