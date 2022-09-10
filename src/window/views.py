@@ -11,7 +11,8 @@ from config import (ASSET_PATH, BRIGHTNESS_TIME, BRIGHTNESS_VALUE,
                     CAMERA_MOVEMENT_SPEED, CARBON_DIOXIDE_GEYSERS, CRATER,
                     DAY_TOTAL_TIME, DISASTER_PROBA, ICY_TILE, INVERT_MOUSE,
                     IRON_RICH_TILE, LAND, MAP_SIZE_X, MAP_SIZE_Y, PARTY_TIME,
-                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO)
+                    RESSOURCE_TO_BUILD, STYLE_GOLDEN_TANOI, VOLCANO,
+                    SCREEN_WIDTH, SCREEN_HEIGHT)
 from utils import (Disasters, RessourceManager, SideBar, Tile, TileList,
                    rect2isometric)
 
@@ -35,6 +36,7 @@ class Menu(arcade.View):
         self.v_box_message = None
 
         self.manager = None
+        self.background = arcade.load_texture(str(ASSET_PATH / "titles" / "menu_background.png"))
 
     def on_show_view(self) -> None:
         """Called when the current is switched to this view."""
@@ -42,7 +44,7 @@ class Menu(arcade.View):
 
     def setup(self) -> None:
         """Set up the game variables. Call to re-start the game."""
-        self.v_box = arcade.gui.UIBoxLayout(space_between=30)
+        self.v_box = arcade.gui.UIBoxLayout(space_between=10)
         self.v_box_message = arcade.gui.UIBoxLayout()
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -91,7 +93,9 @@ class Menu(arcade.View):
     def on_draw(self) -> None:
         """Called when this view should draw."""
         self.clear()
-
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
         self.manager.draw()
 
     def _on_click_play_button(self, _: arcade.gui.UIOnClickEvent) -> None:
@@ -432,6 +436,8 @@ class WinLooseMenu(arcade.View):
         self.manager = None
 
         self.win_loose_message = win_loose
+        
+        self.background = arcade.load_texture(str(ASSET_PATH / "titles" / "menu_background.png"))
 
     def on_show_view(self) -> None:
         """Called when the current is switched to this view."""
@@ -467,7 +473,9 @@ class WinLooseMenu(arcade.View):
     def on_draw(self) -> None:
         """Called when this view should draw."""
         self.clear()
-
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
         self.manager.draw()
 
     def _on_click_restart_button(self, _: arcade.gui.UIOnClickEvent) -> None:
