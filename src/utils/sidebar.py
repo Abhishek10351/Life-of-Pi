@@ -282,7 +282,7 @@ class SideBar:
         anchor = arcade.gui.UIAnchorWidget(
             anchor_x="right",
             anchor_y="bottom",
-            align_x=0,
+            align_x=-15,
             align_y=15,
             child=self.res_label1)
         self.res_label1.anchor = anchor
@@ -293,7 +293,7 @@ class SideBar:
         anchor = arcade.gui.UIAnchorWidget(
             anchor_x="right",
             anchor_y="bottom",
-            align_x=0,
+            align_x=-15,
             align_y=15,
             child=self.res_label2)
         self.res_label2.anchor = anchor
@@ -301,6 +301,8 @@ class SideBar:
         self.res_view = 0
         
         self.soundcues.reset()
+        self.switch_build()
+        self.switch_resview()
 
     def check_button_hover(self):
         if self.build == 0:
@@ -511,5 +513,10 @@ class SideBar:
         self.draw_time_left()
         self.draw_build_message()
         self.draw_build_structure()
-        for text in self.text.values():
-            text.draw()
+        #for text in self.text.values():
+        #    text.draw()
+        for key in self.text:
+            if 'res_display' in key and self.res_view == 0:
+                continue
+            self.text[key].draw()
+        
