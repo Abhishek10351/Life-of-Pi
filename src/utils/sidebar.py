@@ -379,7 +379,7 @@ class SideBar:
         info = 'Time before rescue : %i s' % round(PARTY_TIME - self.parent.time_delta)
         if not self.text.get("time_left"):
             self.text["time_left"] = arcade.Text(text=info, start_x=(SCREEN_WIDTH / 2) - 105,
-                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN, multiline=True)
+                                                 start_y=SCREEN_HEIGHT - 20, color=arcade.color.GREEN)
         self.text["time_left"].text = info
 
     # used to display some information about the current tile selected by
