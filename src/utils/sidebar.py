@@ -425,9 +425,10 @@ class SideBar:
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.GREEN, font_size=12,
                                  anchor_x="center", anchor_y="center")
             else:
-                arcade.draw_text("can't build structure!", self.window_width / 2,
+                arcade.draw_text("can't build structure! you are probably low on resource or"
+                                 " the tile doesn't support the build type", self.window_width / 2 + 50,
                                  self.window_height - BUILDTEXTHEIGHT, arcade.color.RED, font_size=12,
-                                 anchor_x="center", anchor_y="center")
+                                 anchor_x="center", anchor_y="center", multiline=True, width=300)
 
     def draw_res_disp(self):
         if self.res_view == 0:
