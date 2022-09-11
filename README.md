@@ -18,9 +18,9 @@ Welcome to the command post of Mars Mission Cobra-2! You need to take control of
 - Click to select options from the build menu and place them into the map
 
 ## Credits
-Game Design and Programming: BeautifulReques, Pega, Peter312, mit-mit
-3D Models/Artwork: mit-mit
-Sounds and Music: mit-mit, BeautifulReques
+- Game Design and Programming: BeautifulReques, Pega, Peter312, mit-mit
+- 3D Models/Artwork: mit-mit
+- Sounds and Music: mit-mit, BeautifulReques
 
 Other content of the game was modified from various open sources:
 
